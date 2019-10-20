@@ -1,0 +1,11 @@
+==================================
+= Bastille Manager Webmin Module =
+==================================
+Version        Description
+
+0.1.5..........Fix edit/saving bastille config file.
+0.1.4..........Obsolete code cleanup.
+0.1.3..........Don't write fstab if source/target is empty.
+0.1.2..........Remove unused code.
+0.1.1..........Add BSD licence and missing code.
+0.1.0..........Initial Bastille Manager module release.
