@@ -11,4 +11,6 @@ print &ui_table_start($text{'index_select'}, "width=100%", undef);
 &ui_perjail_destroy();
 print &ui_table_end();
 
+print "<br>$text{'index_deletejail'}";
+
 &ui_print_footer("", $text{'index_return'});

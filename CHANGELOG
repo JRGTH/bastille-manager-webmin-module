@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.1.6..........Fix fstab jail path, update lang files.
 0.1.5..........Fix edit/saving bastille config file.
 0.1.4..........Obsolete code cleanup.
 0.1.3..........Don't write fstab if source/target is empty.

@@ -19,16 +19,19 @@ print &ui_form_start("fstab_create.cgi");
 print &ui_table_start("$text{'create_fstabtitle'} $item", "width=100%", 2);
 
 if ($config{'show_advanced'}) {
+	print &ui_table_row($text{'create_jailprefix'},
+	&ui_textbox("prefix", "$config{'bastille_jailpath'}/$jail/root", 30));
+
 	print &ui_table_row($text{'create_mkdirs'},
 		&ui_yesno_radio("mkdir", lc($mkdir) eq 'no' ? 0 : lc($mkdir) eq 'yes' ? 1 : 1));
 	print &ui_table_row($text{'create_targetmode'},
 		&ui_yesno_radio("dirmod", lc($dirmod) eq 'no' ? 0 : lc($dirmod) eq 'yes' ? 1 : 1));
 	print &ui_hidden("name", $jail);
-	
+
 	print &ui_table_row($text{'create_sourcedir'},
 	&ui_textbox("source", "", 30)." ".
 	&file_chooser_button("path", 1));
-	
+
 	print &ui_table_row($text{'create_targetdir'},
 	&ui_textbox("target", "", 30)." ".
 	&file_chooser_button("path", 1));

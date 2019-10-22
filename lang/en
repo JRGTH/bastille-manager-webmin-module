@@ -1,7 +1,6 @@
 index_title=Bastille Manager
 index_errconfig=The bastille rc.conf file $1 was not found on your system. Maybe bastille is not installed, or your <a href='$2'>module configuration</a> is incorrect.
 index_errbastille=The bastille program $1 was not found on your system. Maybe bastille is not installed, or your <a href='$2'>module configuration</a> is incorrect.
-index_errfdecfs=The <a href='https://www.freebsd.org/cgi/man.cgi?query=fdescfs&sektion=5&manpath=freebsd-release-ports'>fdescfs(5)</a> is not mounted, performance may suffer. Please run: mount -t fdescfs null /dev/fd <br>You can also permanently mount it in /etc/fstab with the following entry: fdescfs /dev/fd  fdescfs  rw  0  0</br>
 index_return=module index
 index_version=$1
 index_modver=
@@ -10,6 +9,10 @@ index_jailres=Jail Sources
 index_edit=Config Editor
 index_advanced=Management
 index_select=Select a Jail
+index_configselect=Click on the jail name to use the built-in editor, or click on the jail path to open with File Manager.
+index_fstabselect=Click on the jail name to use the built-in FSTAB manager, or click on the jail path to open with File Manager.
+index_deletejail=Click on the desired jail name to be deleted, confirmation is required on the next step.
+index_jailsource=Click on the jail path to open the directory with File Manager.
 
 start_err=Failed to start bastille jail
 stop_err=Failed to stop bastille jail
@@ -28,14 +31,14 @@ manual_file=Edit config file:
 manual_edata=Nothing entered!
 manual_err=Failed to save config file
 manual_createjail=Create Standard Jail
-manual_modfstab=Manipulate Jail Fstab
+manual_modfstab=Manipulate Jail FSTAB
 manual_deljail=Destroy Selected Jail
 manual_jailedit=Jail Config Files
 manual_editnote=Note: Be careful, as no validation will be performed on your input!
 
 create_button=Create
-create_fstab=Add Fstab Entry
-create_fstabtitle=Add Fstab entry to:
+create_fstab=Add FSTAB Entry
+create_fstabtitle=Add FSTAB entry to:
 create_fstabitem=Jail to be manipulated
 create_err=Failed to create bastille jail
 create_mkdirs=Create target directory if missing
@@ -59,12 +62,13 @@ create_reltype=Base release
 create_netcards=Local network interfaces available:
 create_reltypes=Local base releases already available:
 create_relnote=Create a jail with the previous entered parameters.
+create_jailprefix=Current jail path default prefix
 
 delete_button=Delete
 delete_err=Failed to destroy bastille jail
 delete_notice=You are about to destroy the jail:
 delete_confirm=Enter the jail name for confirmation
-delete_delnote=Warning: bastille will attempt to stop the jail if running and destroy it, this cannot be undone!
+delete_delnote=Warning: you are attempting to destroy a jail with all of its components, this cannot be undone!
 
 list_emptyres=Alert: No jails created yet, or possible config corruption!
 list_fixbutton=Fix Corrupted Jail

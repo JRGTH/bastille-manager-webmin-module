@@ -11,4 +11,6 @@ print &ui_table_start($text{'index_select'}, "width=100%", undef);
 &ui_perjail_fstab();
 print &ui_table_end();
 
+print "<br>$text{'index_fstabselect'}";
+
 &ui_print_footer("", $text{'index_return'});
