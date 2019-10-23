@@ -12,10 +12,10 @@ my $props_status="IP,HOSTNAME,PATH";
 
 # Resource props.
 if ($config{'show_cmd'}) {
-	$props_res="PATH,CMD";
+	$props_res="PATH, ACTIVE,CMD";
 	}
 else {
-	$props_res="PATH";
+	$props_res="PATH,ACTIVE";
 }
 
 # get_bastille_version()
@@ -73,6 +73,22 @@ my @rels = split(/\s+/, $localrels);
 return ( @rels );
 }
 
+sub check_jail_status
+{
+$jail = $key;
+$jailcheck = `jls | sed '1 d' | awk '{print \$3}' | grep -w '$jail'`;
+if ($jailcheck) {
+	# Enable stop and restart buttons and display check icon.
+	$iconstat = "/images/check.png";
+	$showcmd = "<a href='stop.cgi?jails=$key'>Stop</a> | <a href='restart.cgi?jails=$key'>Restart</a>"
+	}
+else {
+	# Enable start and restart buttons and display stop icon.
+	$iconstat = "/images/not.png";
+	$showcmd = "<a href='start.cgi?jails=$key'>Start</a> | <a href='restart.cgi?jails=$key'>Restart</a>";
+	}
+}
+
 sub list_jails
 {
 my %jails=();
@@ -110,12 +126,13 @@ foreach $key (sort(keys %jails))
 	@vals = ();
 	foreach $prop (@props) { push (@vals, $jails{$key}{$prop}); }
 	if ($config{'show_cmd'}) {
-		# Enable start, stop and restart buttons.
+		# Enable stop and restart buttons.
+		my $cmdbuttons = "<a href='stop.cgi?jails=$jails{$key}{HOSTNAME}'>Stop</a> | <a href='restart.cgi?jails=$jails{$key}{HOSTNAME}'>Restart</a>";
 		print &ui_columns_row([ "<a href='index.cgi?jails=$key'>$key</a>", @vals,
-			"<a href='stop.cgi?jails=$jails{$key}{HOSTNAME}'>Stop</a> | <a href='restart.cgi?jails=$jails{$key}{HOSTNAME}'>Restart</a>"]);
+			"$cmdbuttons"]);
 		}
 	else {
-		# Disable start, stop and restart buttons.
+		# Disable stop and restart buttons.
 		print &ui_columns_row([ "<a href='index.cgi?jails=$key'>$key</a>", @vals ]);
 	}
 	$num ++;
@@ -153,11 +170,13 @@ foreach $key (sort(keys %jailr))
 	@vals = ();
 	foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
 	if ($config{'show_cmd'}) {
+		&check_jail_status($key);
 		print &ui_columns_row([$key, "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-			"<a href='start.cgi?jails=$key'>Start</a> | <a href='stop.cgi?jails=$key'>Stop</a> | <a href='restart.cgi?jails=$key'>Restart</a>"]);
+			"<img src=$iconstat>", "$showcmd"]);
 	}
 	else {
-		print &ui_columns_row([$key, "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>"]);
+		&check_jail_status($key);
+		print &ui_columns_row([$key, "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>", "<img src=$iconstat>"]);
 		#print &ui_columns_row(["$key"]);
 	}
 }
