@@ -1,6 +1,6 @@
 show_cmd=0
 show_conf=0
-show_fullstat=0
+show_templates=0
 show_advanced=0
 show_destroy=0
 bastille_path=/usr/local/bin/bastille

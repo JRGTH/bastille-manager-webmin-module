@@ -30,7 +30,6 @@ else {
 
 # Start tabs.
 @tabs = ();
-push(@tabs, [ "info", $text{'index_jailtab'}, "index.cgi?mode=info" ]);
 push(@tabs, [ "res", $text{'index_jailres'}, "index.cgi?mode=res" ]);
 if ($config{'show_conf'}) {
 	push(@tabs, [ "conf", $text{'index_edit'}, "index.cgi?mode=conf" ]);
@@ -39,11 +38,6 @@ if ($config{'show_advanced'}) {
 	push(@tabs, [ "advanced", $text{'index_advanced'}, "index.cgi?mode=advanced" ]);
 	}
 print &ui_tabs_start(\@tabs, "mode", $in{'mode'} || $tabs[0]->[0], 1);
-
-# Start jail list tab.
-print &ui_tabs_start_tab("mode", "info");
-&ui_jail_list();
-print &ui_tabs_end_tab("mode", "info");
 
 # Start jail resource tab.
 print &ui_tabs_start_tab("mode", "res");

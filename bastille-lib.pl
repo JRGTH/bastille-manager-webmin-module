@@ -12,10 +12,10 @@ my $props_status="IP,HOSTNAME,PATH";
 
 # Resource props.
 if ($config{'show_cmd'}) {
-	$props_res="PATH, ACTIVE,CMD";
+	$props_res="IPV4,NIC,PATH,ACTIVE,TMPL,CMD";
 	}
 else {
-	$props_res="PATH,ACTIVE";
+	$props_res="IPV4,NIC,PATH,ACTIVE,TMPL";
 }
 
 # get_bastille_version()
@@ -31,12 +31,23 @@ my $getnics = 'ifconfig -l';
 my $nics = `$getnics`;
 }
 
+sub list_base_release
+{
+my @netmask = qw( 12.1-RELEASE 12.0-RELEASE 11.3-RELEASE 11.2-RELEASE );
+return ( @netmask );
+}
+
 sub get_local_releases
 {
 # Use ls command, otherwise use bastille internal command to list all bases.
 my $getreleases = "ls $config{'bastille_relpath'}";
 my $releases = `$getreleases`;
 }
+
+# Set action buttons.
+my $start_icon = "./images/start.png";
+my $stop_icon = "./images/stop.png";
+my $restart_icon = "./images/restart.png";
 
 sub get_local_osrelease
 {
@@ -79,13 +90,15 @@ $jail = $key;
 $jailcheck = `jls | sed '1 d' | awk '{print \$3}' | grep -w '$jail'`;
 if ($jailcheck) {
 	# Enable stop and restart buttons and display check icon.
-	$iconstat = "/images/check.png";
-	$showcmd = "<a href='stop.cgi?jails=$key'>Stop</a> | <a href='restart.cgi?jails=$key'>Restart</a>"
+	$iconstat = "./images/check.png";
+	#$showcmd = "<a href='stop.cgi?jails=$key'>Stop</a> | <a href='restart.cgi?jails=$key'>Restart</a>"
+	$showcmd = "<a href='stop.cgi?jails=$key'><img src=$stop_icon></a> | <a href='restart.cgi?jails=$key'><img src=$restart_icon></a>"
 	}
 else {
 	# Enable start and restart buttons and display stop icon.
-	$iconstat = "/images/not.png";
-	$showcmd = "<a href='start.cgi?jails=$key'>Start</a> | <a href='restart.cgi?jails=$key'>Restart</a>";
+	$iconstat = "./images/not.png";
+	#$showcmd = "<a href='start.cgi?jails=$key'>Start</a> | <a href='restart.cgi?jails=$key'>Restart</a>";
+	$showcmd = "<a href='start.cgi?jails=$key'><img src=$start_icon></a> | <a href='restart.cgi?jails=$key'><img src=$restart_icon></a>";
 	}
 }
 
@@ -106,38 +119,6 @@ while (my $line =<$fh>)
 
 }
 return %jails;
-}
-
-# Jail summary list.
-sub ui_jail_list
-{
-my %jails = list_jails($jails);
-@props = split(/,/, $props_status);
-# Check if commands enabled.
-if ($config{'show_cmd'}) {
-	print &ui_columns_start([ "JID", @props, "CMD" ]);
-	}
-else {
-	print &ui_columns_start([ "JID", @props ]);
-}
-my $num = 0;
-foreach $key (sort(keys %jails))
-{
-	@vals = ();
-	foreach $prop (@props) { push (@vals, $jails{$key}{$prop}); }
-	if ($config{'show_cmd'}) {
-		# Enable stop and restart buttons.
-		my $cmdbuttons = "<a href='stop.cgi?jails=$jails{$key}{HOSTNAME}'>Stop</a> | <a href='restart.cgi?jails=$jails{$key}{HOSTNAME}'>Restart</a>";
-		print &ui_columns_row([ "<a href='index.cgi?jails=$key'>$key</a>", @vals,
-			"$cmdbuttons"]);
-		}
-	else {
-		# Disable stop and restart buttons.
-		print &ui_columns_row([ "<a href='index.cgi?jails=$key'>$key</a>", @vals ]);
-	}
-	$num ++;
-}
-print &ui_columns_end();
 }
 
 sub list_res
@@ -164,20 +145,35 @@ sub ui_jail_res
 {
 my %jailr = list_res($jailr);
 @props = split(/,/, $props_res);
-print &ui_columns_start([ "NAME", @props ]);
+print &ui_columns_start([ "JID", "NAME", @props ]);
 foreach $key (sort(keys %jailr))
 {
 	@vals = ();
 	foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
+	
+	$jid = `/usr/sbin/jls | /usr/bin/grep $key | /usr/bin/awk '{print \$1}'`;
+	$ipv4 = `/usr/bin/grep -w 'ip4.addr' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'`;
+	$interface = `/usr/bin/grep -w 'interface' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'`;
+	if (!$jid) {
+		$jid = "-";
+		}
+
+		$custom_icon = "./images/$key\_icon.png";
+		if (-e $custom_icon) {
+			$template_icon = "./images/$key\_icon.png";
+		} else {
+			$template_icon = "./images/bsd_icon.png";
+			}
+	
 	if ($config{'show_cmd'}) {
 		&check_jail_status($key);
-		print &ui_columns_row([$key, "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-			"<img src=$iconstat>", "$showcmd"]);
+		print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+			"<img src=$iconstat>", "<img src=$template_icon>", "$showcmd"]);
 	}
 	else {
 		&check_jail_status($key);
-		print &ui_columns_row([$key, "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>", "<img src=$iconstat>"]);
-		#print &ui_columns_row(["$key"]);
+		print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+			"<img src=$iconstat>", "<img src=$template_icon>"]);
 	}
 }
 print &ui_columns_end();
@@ -208,7 +204,7 @@ foreach $key (sort(keys %jailr))
 {
 	@vals = ();
 	foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
-	print &ui_columns_row(["<a href='ui_jail_addfstab.cgi?jailr=$key'>$key</a>",
+	print &ui_columns_row(["<a href='ui_jail_fstab.cgi?jailr=$key'>$key</a>",
 		"<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>" ]);
 }
 &unlink_record();
@@ -275,6 +271,10 @@ if ($config{'show_advanced'}) {
 	push(@titles2, $text{'create_fstab'});
 	push(@icons2, "images/dirtree.gif");
 	}
+
+push(@links2, "ui_release_fetch.cgi");
+push(@titles2, $text{'download_icontext'});
+push(@icons2, "images/download.gif");
 &icons_table(\@links2, \@titles2, \@icons2, 4);
 }
 
@@ -373,6 +373,26 @@ if ($config{'show_advanced'}) {
 		local $out = `echo $cmd >> $config{'bastille_jailpath'}/$name/fstab 2>&1 </dev/null`;
 		return "<pre>$out</pre>" if ($?);
 		}
+	}
+return undef;
+}
+
+sub download_release_cmd
+{
+if ($config{'show_advanced'}) {
+	my $cmd = $in{'release'};
+	local $out = `bastille bootstrap $cmd 2>&1 </dev/null`;
+	return "<pre>$out</pre>" if ($?);
+	}
+return undef;
+}
+
+sub delete_release_cmd
+{
+if ($config{'show_advanced'}) {
+	my $cmd = $in{'release'};
+	local $out = `bastille destroy $cmd 2>&1 </dev/null`;
+	return "<pre>$out</pre>" if ($?);
 	}
 return undef;
 }
