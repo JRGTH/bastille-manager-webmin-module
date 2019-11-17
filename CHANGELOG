@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.2.1..........Cosmetic improvements, add option for thickjail creation if supported.
 0.2.0..........Improved dash layout, add base fetch and improvements.
 0.1.7..........Add status icons to jail sources tab.
 0.1.6..........Fix fstab jail path, update lang files.

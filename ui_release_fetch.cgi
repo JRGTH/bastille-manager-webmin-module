@@ -7,8 +7,7 @@ require './bastille-lib.pl';
 
 my $base_deflabel = $text{'index_defrelease'};
 my $base_reldef = &get_local_osrelease();
-my $base_reldef_trim = `echo "$base_deflabel ($base_reldef)" | cut -d "-" -f1`;
-#my $base_reldef = "Default($base_reldef_trim)";
+my $sys_base_rel = `echo "$base_deflabel ($base_reldef)"`;
 
 print &ui_form_start("fetch_release.cgi");
 print &ui_table_start($text{'download_dl'}, "width=100%", 2);
@@ -25,7 +24,7 @@ if ($config{'show_advanced'}) {
 	#print &ui_table_row($text{'download_confirm'},
 	#	&ui_textbox("osrelease", $release, 30, ));
 
-		print &ui_table_row($text{'download_confirm'}, &ui_select("release", $base_reldef_trim, [ &list_base_release() ], 1, 0, 1));
+		print &ui_table_row($text{'download_confirm'}, &ui_select("release", $sys_base_rel, [ &list_base_release() ], 1, 0, 1));
 
 }
 

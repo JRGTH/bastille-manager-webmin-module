@@ -11,6 +11,7 @@ my $nic_def = "none";
 #my $netmask_def = "none";
 #my $netmaskv6_def = "none";
 my $release_def = "none";
+my $thick_jail = &thickjail_support();
 
 print &ui_form_start("create.cgi");
 print &ui_table_start($text{'manual_createjail'}, "width=100%", 2);
@@ -59,6 +60,12 @@ if ($config{'show_advanced'}) {
 				[ &list_local_rels() ], 1, 0,
 				"release_def" ? 1 : 0) ] ]));
 				#&ui_select("rel", uc($release_def), [ &list_local_rels() ], 1, 0, $release_def ));
+
+	if ($thick_jail) {
+		$thick = "no";
+		print &ui_table_row($text{'create_thickjail'},
+			&ui_yesno_radio("thick", lc($thick) eq 'no' ? 0 : lc($thick) eq 'yes' ? 1 : 1));
+		}
 }
 print &ui_table_end();
 

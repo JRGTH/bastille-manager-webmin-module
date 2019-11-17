@@ -12,10 +12,20 @@ my $props_status="IP,HOSTNAME,PATH";
 
 # Resource props.
 if ($config{'show_cmd'}) {
-	$props_res="IPV4,NIC,PATH,ACTIVE,TMPL,CMD";
+	if ($config{'show_templates'}) {
+		$props_res="IPV4,NIC,PATH,ACTIVE,TEMPLATE,CMD";
+		}
+	else {
+		$props_res="IPV4,NIC,PATH,ACTIVE,CMD";
+		}
 	}
 else {
-	$props_res="IPV4,NIC,PATH,ACTIVE,TMPL";
+	if ($config{'show_templates'}) {
+		$props_res="IPV4,NIC,PATH,ACTIVE,TEMPLATE";
+		}
+	else {
+		$props_res="IPV4,NIC,PATH,ACTIVE";
+		}
 }
 
 # get_bastille_version()
@@ -48,6 +58,11 @@ my $releases = `$getreleases`;
 my $start_icon = "./images/start.png";
 my $stop_icon = "./images/stop.png";
 my $restart_icon = "./images/restart.png";
+
+sub thickjail_support
+{
+my $thick_jail = `$config{'bastille_path'} create | /usr/bin/grep -wo "option"`;
+}
 
 sub get_local_osrelease
 {
@@ -87,7 +102,7 @@ return ( @rels );
 sub check_jail_status
 {
 $jail = $key;
-$jailcheck = `jls | sed '1 d' | awk '{print \$3}' | grep -w '$jail'`;
+$jailcheck = `/usr/sbin/jls | sed '1 d' | awk '{print \$3}' | /usr/bin/grep -w '$jail'`;
 if ($jailcheck) {
 	# Enable stop and restart buttons and display check icon.
 	$iconstat = "./images/check.png";
@@ -105,7 +120,7 @@ else {
 sub list_jails
 {
 my %jails=();
-my $list=`jls | sed "1 d"`;
+my $list=`/usr/sbin/jls | sed "1 d"`;
 open my $fh, "<", \$list;
 while (my $line =<$fh>)
 {
@@ -124,7 +139,7 @@ return %jails;
 sub list_res
 {
 my %jailr=();
-my $list=`bastille list jail`;
+my $list=`$config{'bastille_path'} list jail`;
 open my $fh, "<", \$list;
 while (my $line =<$fh>)
 {
@@ -158,22 +173,34 @@ foreach $key (sort(keys %jailr))
 		$jid = "-";
 		}
 
-		$custom_icon = "./images/$key\_icon.png";
-		if (-e $custom_icon) {
-			$template_icon = "./images/$key\_icon.png";
-		} else {
-			$template_icon = "./images/bsd_icon.png";
-			}
-	
+	$custom_icon = "./images/$key\_icon.png";
+	if (-e $custom_icon) {
+		$template_icon = "./images/$key\_icon.png";
+	} else {
+		$template_icon = "./images/bsd_icon.png";
+		}
+
 	if ($config{'show_cmd'}) {
 		&check_jail_status($key);
-		print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-			"<img src=$iconstat>", "<img src=$template_icon>", "$showcmd"]);
+		if ($config{'show_templates'}) {
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+				"<img src=$iconstat>", "<img src=$template_icon>", "$showcmd"]);
+			}
+		else {
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+				"<img src=$iconstat>", "$showcmd"]);
+			}	
 	}
 	else {
 		&check_jail_status($key);
-		print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-			"<img src=$iconstat>", "<img src=$template_icon>"]);
+		if ($config{'show_templates'}) {
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+				"<img src=$iconstat>", "<img src=$template_icon>"]);
+			}
+		else {
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+				"<img src=$iconstat>"]);
+			}
 	}
 }
 print &ui_columns_end();
@@ -327,8 +354,16 @@ return undef;
 sub jail_create_cmd
 {
 if ($config{'show_advanced'}) {
+
+	if ($in{'thick'} == 1 ) {
+		$option = "-T";
+		}
+	else {
+		$option = "";
+	}
+
 	my $cmd = $cmdline;
-	local $out = `bastille create $cmd 2>&1 </dev/null`;
+	local $out = `$config{'bastille_path'} create $option $cmd 2>&1 </dev/null`;
 
 	if ($nicset) {
 	`perl -p -i -e "s/interface = .*;/interface = $nicset;/g" $config{'bastille_jailpath'}/$name/jail.conf`;
@@ -347,7 +382,7 @@ if ($config{'show_destroy'}) {
 	if ($item ne $in{'name'}) {
 		$item = "";
 		}
-		local $out = `bastille destroy $item 2>&1 </dev/null`;
+		local $out = `$config{'bastille_path'} destroy $item 2>&1 </dev/null`;
 		return "<pre>$out</pre>" if ($?);
 		}
 return undef;
@@ -381,7 +416,7 @@ sub download_release_cmd
 {
 if ($config{'show_advanced'}) {
 	my $cmd = $in{'release'};
-	local $out = `bastille bootstrap $cmd 2>&1 </dev/null`;
+	local $out = `$config{'bastille_path'} bootstrap $cmd 2>&1 </dev/null`;
 	return "<pre>$out</pre>" if ($?);
 	}
 return undef;
@@ -391,7 +426,7 @@ sub delete_release_cmd
 {
 if ($config{'show_advanced'}) {
 	my $cmd = $in{'release'};
-	local $out = `bastille destroy $cmd 2>&1 </dev/null`;
+	local $out = `$config{'bastille_path'} destroy $cmd 2>&1 </dev/null`;
 	return "<pre>$out</pre>" if ($?);
 	}
 return undef;

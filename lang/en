@@ -13,7 +13,7 @@ index_configselect=Click on the jail name to use the built-in editor, or click o
 index_fstabselect=Click on the jail name to use the built-in FSTAB manager, or click on the jail path to open with File Manager.
 index_deletejail=Click on the desired jail name to be deleted, confirmation is required on the next step.
 index_jailsource=Click on the jail path to open the directory with File Manager.
-index_defrelease=System Default
+index_defrelease=System
 
 start_err=Failed to start bastille jail
 stop_err=Failed to stop bastille jail
@@ -64,6 +64,7 @@ create_netcards=Local network interfaces available:
 create_relavail=Base releases already extracted:
 create_relnote=Create a jail with the previous entered parameters.
 create_jailprefix=Current jail path default prefix
+create_thickjail=Create a Thickjail
 
 delete_button=Delete
 delete_err=Failed to destroy bastille jail
