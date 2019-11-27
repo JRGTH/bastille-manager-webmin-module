@@ -43,8 +43,8 @@ my $nics = `$getnics`;
 
 sub list_base_release
 {
-my @netmask = qw( 12.1-RELEASE 12.0-RELEASE 11.3-RELEASE 11.2-RELEASE );
-return ( @netmask );
+my @baserels = qw( 12.1-RELEASE 12.0-RELEASE 11.3-RELEASE 11.2-RELEASE );
+return ( @baserels );
 }
 
 sub get_local_releases
@@ -415,7 +415,16 @@ return undef;
 sub download_release_cmd
 {
 if ($config{'show_advanced'}) {
-	my $cmd = $in{'release'};
+	my $selection = $in{'release'};
+	my $sysrelease = &get_local_osrelease();
+
+	if ($selection eq "DAFAULT") {
+		$sysrelease =~ s/\s+$//;
+		$cmd = $sysrelease;
+	} else {
+		$cmd = $selection;
+		}
+
 	local $out = `$config{'bastille_path'} bootstrap $cmd 2>&1 </dev/null`;
 	return "<pre>$out</pre>" if ($?);
 	}
