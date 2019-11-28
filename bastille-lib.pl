@@ -13,18 +13,18 @@ my $props_status="IP,HOSTNAME,PATH";
 # Resource props.
 if ($config{'show_cmd'}) {
 	if ($config{'show_templates'}) {
-		$props_res="IPV4,NIC,PATH,ACTIVE,TEMPLATE,CMD";
+		$props_res="IPV4,RELEASE,NIC,PATH,ACTIVE,TEMPLATE,CMD";
 		}
 	else {
-		$props_res="IPV4,NIC,PATH,ACTIVE,CMD";
+		$props_res="IPV4,RELEASE,NIC,PATH,ACTIVE,CMD";
 		}
 	}
 else {
 	if ($config{'show_templates'}) {
-		$props_res="IPV4,NIC,PATH,ACTIVE,TEMPLATE";
+		$props_res="IPV4,RELEASE,NIC,PATH,ACTIVE,TEMPLATE";
 		}
 	else {
-		$props_res="IPV4,NIC,PATH,ACTIVE";
+		$props_res="IPV4,RELEASE,NIC,PATH,ACTIVE";
 		}
 }
 
@@ -173,6 +173,11 @@ foreach $key (sort(keys %jailr))
 		$jid = "-";
 		}
 
+	$osrel = `/usr/sbin/jexec $key freebsd-version 2>/dev/null`;
+	if (!$osrel) {
+		$osrel = "-";
+		}
+
 	$custom_icon = "./images/$key\_icon.png";
 	if (-e $custom_icon) {
 		$template_icon = "./images/$key\_icon.png";
@@ -183,22 +188,22 @@ foreach $key (sort(keys %jailr))
 	if ($config{'show_cmd'}) {
 		&check_jail_status($key);
 		if ($config{'show_templates'}) {
-			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
 				"<img src=$iconstat>", "<img src=$template_icon>", "$showcmd"]);
 			}
 		else {
-			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
 				"<img src=$iconstat>", "$showcmd"]);
 			}	
 	}
 	else {
 		&check_jail_status($key);
 		if ($config{'show_templates'}) {
-			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
 				"<img src=$iconstat>", "<img src=$template_icon>"]);
 			}
 		else {
-			print &ui_columns_row(["$jid", $key, "$ipv4", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
+			print &ui_columns_row(["$jid", $key, "$ipv4", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
 				"<img src=$iconstat>"]);
 			}
 	}

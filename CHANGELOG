@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.2.3..........Display actual container release version.
 0.2.2..........Fix default release download, minor code fixes.
 0.2.1..........Cosmetic improvements, add option for thickjail creation if supported.
 0.2.0..........Improved dash layout, add base fetch and improvements.
