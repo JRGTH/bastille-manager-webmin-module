@@ -50,7 +50,7 @@ return ( @baserels );
 sub get_local_releases
 {
 # Use ls command, otherwise use bastille internal command to list all bases.
-my $getreleases = "ls $config{'bastille_relpath'}";
+my $getreleases = "echo \$(ls $config{'bastille_relpath'}) | sed 's/\ /,\ /g'";
 my $releases = `$getreleases`;
 }
 
@@ -422,6 +422,15 @@ sub download_release_cmd
 if ($config{'show_advanced'}) {
 	my $selection = $in{'release'};
 	my $sysrelease = &get_local_osrelease();
+	my $opt_distfiles = "$in{'opt_lib32'} $in{'opt_ports'} $in{'opt_src'}";
+	my $def_distfiles = `/bin/cat $config{'bastille_confpath'} | /usr/bin/grep 'bastille_bootstrap_archives=' | /usr/bin/cut -d'"' -f2`;
+	$opt_distfiles =~ s/\s+$//;
+	$def_distfiles =~ s/\s+$//;
+
+	if ($opt_distfiles) {
+		# Override config distfiles list once.
+		$set_distfiles = `/usr/sbin/sysrc -f $config{'bastille_confpath'} bastille_bootstrap_archives=\"base $opt_distfiles\"`;
+		}
 
 	if ($selection eq "DAFAULT") {
 		$sysrelease =~ s/\s+$//;
@@ -432,6 +441,9 @@ if ($config{'show_advanced'}) {
 
 	local $out = `$config{'bastille_path'} bootstrap $cmd 2>&1 </dev/null`;
 	return "<pre>$out</pre>" if ($?);
+
+	# Set back default distfiles.
+	`/usr/sbin/sysrc -f $config{'bastille_confpath'} bastille_bootstrap_archives=\"$def_distfiles\"`;
 	}
 return undef;
 }

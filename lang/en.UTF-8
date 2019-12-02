@@ -83,3 +83,7 @@ download_dlerr=Failed to download base release
 download_icontext=Download Base Release
 download_dl=Download FreeBSD Base Release
 download_dlnote=Click to download selected base release, this may take several minutes.
+download_optdistfiles=Select optional distfiles:
+download_lib32=32-bit Compatibility
+download_ports=Ports tree
+download_src=System source tree
