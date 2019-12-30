@@ -102,7 +102,7 @@ return ( @rels );
 sub check_jail_status
 {
 $jail = $key;
-$jailcheck = `/usr/sbin/jls | sed '1 d' | awk '{print \$3}' | /usr/bin/grep -w '$jail'`;
+$jailcheck = `/usr/sbin/jls name | /usr/bin/awk '/^$jail\$/'`;
 if ($jailcheck) {
 	# Enable stop and restart buttons and display check icon.
 	$iconstat = "./images/check.png";
@@ -166,7 +166,7 @@ foreach $key (sort(keys %jailr))
 	@vals = ();
 	foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
 	
-	$jid = `/usr/sbin/jls | /usr/bin/grep $key | /usr/bin/awk '{print \$1}'`;
+	$jid = `/usr/sbin/jls | /usr/bin/awk '/$key\ /{print \$1}'`;
 	$ipv4 = `/usr/bin/grep -w 'ip4.addr' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'`;
 	$interface = `/usr/bin/grep -w 'interface' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'`;
 	if (!$jid) {
