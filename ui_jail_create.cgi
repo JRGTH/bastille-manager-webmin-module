@@ -20,11 +20,12 @@ if ($config{'show_advanced'}) {
 	#$boot = "no";
 	#print &ui_table_row($text{'create_autoboot'},
 	#	&ui_yesno_radio("boot", lc($boot) eq 'no' ? 0 : lc($boot) eq 'yes' ? 1 : 1));
+
 	print &ui_table_row($text{'create_fname'},
-		&ui_opt_textbox("name", $jname, 30, $text{'create_default'}));
+		&ui_textbox("name", $jname, 30, ));
 
 	print &ui_table_row($text{'create_ipv4'},
-		&ui_opt_textbox("ip4", $jip4, 30, $text{'create_default'}));
+		&ui_textbox("ip4", $jip4, 30, ));
 
 	#print &ui_table_row($text{'create_ipv6'},
 	#	&ui_opt_textbox("ip6", $jip6, 30, $text{'create_default'}));
@@ -51,7 +52,6 @@ if ($config{'show_advanced'}) {
 	#			[ &list_ipv6_netmask() ], 1, 0,
 	#			"netmaskv6_def" ? 1 : 0) ] ]));
 	#			#&ui_select("maskv6", uc($netmaskv6_def), [ &list_ipv6_netmask() ], 1, 0, $netmaskv6_def ));
-
 
 	print &ui_table_row($text{'create_reltype'},
 		&ui_radio("release_def", $rel ? 0 : 1,

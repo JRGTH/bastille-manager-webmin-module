@@ -87,3 +87,17 @@ download_optdistfiles=Select optional distfiles:
 download_lib32=32-bit Compatibility
 download_ports=Ports tree
 download_src=System source tree
+
+export_tittle=Backup a Jail
+export_icontext=Backup a Jail
+export_confirm=Select a jail to export:
+export_err=Failed to export jail
+export_dlnote=Click to export the selected jail, this may take several minutes.
+export_button=Save
+
+import_tittle=Restore a Jail
+import_icontext=Restore a Jail
+import_confirm=Select a jail to import:
+import_err=Failed to import jail
+import_dlnote=Click to import the selected jail, this may take several minutes.
+import_button=Save

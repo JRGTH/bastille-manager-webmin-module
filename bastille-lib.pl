@@ -41,6 +41,20 @@ my $getnics = 'ifconfig -l';
 my $nics = `$getnics`;
 }
 
+sub list_local_jails
+{
+my $localjails = `$config{'bastille_path'} list jails`;
+my @jails = split(/\s+/, $localjails);
+return ( @jails );
+}
+
+sub list_local_backups
+{
+my $localbackups = `$config{'bastille_path'} list backups`;
+my @backups = split(/\s+/, $localbackups);
+return ( @backups );
+}
+
 sub list_base_release
 {
 my @baserels = qw( 12.1-RELEASE 12.0-RELEASE 11.3-RELEASE 11.2-RELEASE );
@@ -304,9 +318,24 @@ if ($config{'show_advanced'}) {
 	push(@icons2, "images/dirtree.gif");
 	}
 
-push(@links2, "ui_release_fetch.cgi");
-push(@titles2, $text{'download_icontext'});
-push(@icons2, "images/download.gif");
+if ($config{'show_advanced'}) {
+	push(@links2, "ui_release_fetch.cgi");
+	push(@titles2, $text{'download_icontext'});
+	push(@icons2, "images/download.gif");
+	}
+
+if ($config{'show_advanced'}) {
+	push(@links2, "ui_jail_export.cgi");
+	push(@titles2, $text{'export_icontext'});
+	push(@icons2, "images/backup.gif");
+	}
+
+if ($config{'show_advanced'}) {
+	push(@links2, "ui_jail_import.cgi");
+	push(@titles2, $text{'import_icontext'});
+	push(@icons2, "images/import.gif");
+	}
+
 &icons_table(\@links2, \@titles2, \@icons2, 4);
 }
 
@@ -367,12 +396,20 @@ if ($config{'show_advanced'}) {
 		$option = "";
 	}
 
-	my $cmd = $cmdline;
-	local $out = `$config{'bastille_path'} create $option $cmd 2>&1 </dev/null`;
-
 	if ($nicset) {
-	`perl -p -i -e "s/interface = .*;/interface = $nicset;/g" $config{'bastille_jailpath'}/$name/jail.conf`;
+		if ($nicset eq "NONE") {
+			$opt = "";
+			}
+		else {
+			$opt = $nicset;
+			}
+		}
+	else {
+		$opt = "";
 	}
+
+	my $cmd = "$cmdline $opt";
+	local $out = `$config{'bastille_path'} create $option $cmd 2>&1 </dev/null`;
 
 	return "<pre>$out</pre>" if ($?);
 	}
@@ -444,6 +481,26 @@ if ($config{'show_advanced'}) {
 
 	# Set back default distfiles.
 	`/usr/sbin/sysrc -f $config{'bastille_confpath'} bastille_bootstrap_archives=\"$def_distfiles\"`;
+	}
+return undef;
+}
+
+sub export_jail_cmd
+{
+if ($config{'show_advanced'}) {
+	my $item = $in{'exp_jail'};
+	local $out = `$config{'bastille_path'} export $item 2>&1 </dev/null`;
+	return "<pre>$out</pre>" if ($?);
+	}
+return undef;
+}
+
+sub import_jail_cmd
+{
+if ($config{'show_advanced'}) {
+	my $item = $in{'imp_jail'};
+	local $out = `$config{'bastille_path'} import $item 2>&1 </dev/null`;
+	return "<pre>$out</pre>" if ($?);
 	}
 return undef;
 }
