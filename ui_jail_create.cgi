@@ -11,7 +11,8 @@ my $nic_def = "none";
 #my $netmask_def = "none";
 #my $netmaskv6_def = "none";
 my $release_def = "none";
-my $thick_jail = &thickjail_support();
+my $thick_jail = &options_support();
+my $vnet_jail = &options_support();
 
 print &ui_form_start("create.cgi");
 print &ui_table_start($text{'manual_createjail'}, "width=100%", 2);
@@ -65,6 +66,12 @@ if ($config{'show_advanced'}) {
 		$thick = "no";
 		print &ui_table_row($text{'create_thickjail'},
 			&ui_yesno_radio("thick", lc($thick) eq 'no' ? 0 : lc($thick) eq 'yes' ? 1 : 1));
+		}
+
+	if ($vnet_jail) {
+		$vnet = "no";
+		print &ui_table_row($text{'create_vnetjail'},
+			&ui_yesno_radio("vnet", lc($vnet) eq 'no' ? 0 : lc($vnet) eq 'yes' ? 1 : 1));
 		}
 }
 print &ui_table_end();

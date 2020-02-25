@@ -73,9 +73,10 @@ my $start_icon = "./images/start.png";
 my $stop_icon = "./images/stop.png";
 my $restart_icon = "./images/restart.png";
 
-sub thickjail_support
+# Check if bastille support for options
+sub options_support
 {
-my $thick_jail = `$config{'bastille_path'} create | /usr/bin/grep -wo "option"`;
+my $options_support = `$config{'bastille_path'} create | /usr/bin/grep -wo "option"`;
 }
 
 sub get_local_osrelease
@@ -180,7 +181,7 @@ foreach $key (sort(keys %jailr))
 	@vals = ();
 	foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
 	
-	$jid = `/usr/sbin/jls | /usr/bin/awk '/$key\ /{print \$1}'`;
+	$jid = `/usr/sbin/jls -j $key | /usr/bin/awk '/$key/ {print \$1}'`;
 	$ipv4 = `/usr/bin/grep -w 'ip4.addr' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'`;
 	$interface = `/usr/bin/grep -w 'interface' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'`;
 	if (!$jid) {
@@ -396,6 +397,13 @@ if ($config{'show_advanced'}) {
 		$option = "";
 	}
 
+	if ($in{'vnet'} == 1 ) {
+		$option2 = "-V";
+		}
+	else {
+		$option2 = "";
+	}
+
 	if ($nicset) {
 		if ($nicset eq "NONE") {
 			$opt = "";
@@ -409,7 +417,7 @@ if ($config{'show_advanced'}) {
 	}
 
 	my $cmd = "$cmdline $opt";
-	local $out = `$config{'bastille_path'} create $option $cmd 2>&1 </dev/null`;
+	local $out = `$config{'bastille_path'} create $option $option2 $cmd 2>&1 </dev/null`;
 
 	return "<pre>$out</pre>" if ($?);
 	}
