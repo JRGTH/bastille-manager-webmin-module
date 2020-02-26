@@ -3,6 +3,8 @@
 ==================================
 Version        Description
 
+0.2.8..........Add support for IPv6 and VNET(VIMAGE).
+0.2.7..........Cosmetic improvements.
 0.2.6..........Add jail Export/Import options and minor UI improvements.
 0.2.5..........Fix issue with names containing dashes.
 0.2.4..........Allow for distfiles list override.
