@@ -9,7 +9,7 @@ print &ui_form_start("export_jail.cgi");
 print &ui_table_start($text{'export_tittle'}, "width=100%", 2);
 
 if ($config{'show_advanced'}) {
-	print &ui_table_row($text{'export_confirm'}, &ui_select("exp_jail", "", [ &list_local_jails() ], 1, 0, 1));
+	print &ui_table_row($text{'export_confirm'}, &ui_select("exp_jail", "$text{'export_combobox'}", [ &list_local_jails() ], 1, 0, 1));
 }
 
 print &ui_table_end();

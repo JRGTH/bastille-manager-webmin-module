@@ -11,27 +11,31 @@ if ($in{'mkdir'} == 1 ) {
 	$mkdir = "yes";
 } else {
 	$mkdir = "";
-	}
+}
+
 if ($in{'name'}) {
 	$name = "$in{'name'}";
 } else {
 	$name = "";
-	}
+}
+
 if ($in{'source'}) {
 	$source = "$in{'source'}";
 } else {
 	$source = "";
-	}
+}
+
 if ($in{'target'}) {
 	$target = "$in{'target'}";
 } else {
 	$target = "";
-	}
+}
+
 if ($in{'dirmod'} == 1 ) {
 	$dirmod = "nullfs	ro	0	0";
 } else {
 	$dirmod = "nullfs	rw	0	0";
-	}
+}
 
 $makedir = $mkdir;
 $targetdir = "$config{'bastille_jailpath'}/$name/root$in{'target'}";

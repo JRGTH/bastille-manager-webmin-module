@@ -10,7 +10,7 @@ if (!&has_command($config{'bastille_path'})) {
 		"$gconfig{'webprefix'}/config.cgi?$module_name"),"<p>\n";
 	&ui_print_footer("/", $text{"index"});
 	exit;
-	}
+}
 
 # Get bastille version.
 my $version = &get_bastille_version();
@@ -33,10 +33,10 @@ else {
 push(@tabs, [ "res", $text{'index_jailres'}, "index.cgi?mode=res" ]);
 if ($config{'show_conf'}) {
 	push(@tabs, [ "conf", $text{'index_edit'}, "index.cgi?mode=conf" ]);
-	}
+}
 if ($config{'show_advanced'}) {
 	push(@tabs, [ "advanced", $text{'index_advanced'}, "index.cgi?mode=advanced" ]);
-	}
+}
 print &ui_tabs_start(\@tabs, "mode", $in{'mode'} || $tabs[0]->[0], 1);
 
 # Start jail resource tab.
@@ -49,14 +49,14 @@ if ($config{'show_conf'}) {
 	print &ui_tabs_start_tab("mode", "conf");
 	&ui_bastille_conf();
 	print &ui_tabs_end_tab("mode", "conf");
-	}
+}
 
 # Start bastille advanced tab.
 if ($config{'show_advanced'}) {
 	print &ui_tabs_start_tab("mode", "advanced");
 	&ui_bastille_advanced();
 	print &ui_tabs_end_tab("mode", "advanced");
-	}
+}
 
 # End tabs.
 print &ui_tabs_end(1);

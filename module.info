@@ -1,4 +1,4 @@
 desc=Bastille Manager
 name=Bastille
-longdesc_en=Bastille basic manager for Webmin
+longdesc_en=Bastille jail manager for Webmin
 os_support=freebsd

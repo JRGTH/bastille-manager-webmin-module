@@ -9,7 +9,7 @@ print &ui_form_start("import_jail.cgi");
 print &ui_table_start($text{'import_tittle'}, "width=100%", 2);
 
 if ($config{'show_advanced'}) {
-	print &ui_table_row($text{'import_confirm'}, &ui_select("imp_jail", "", [ &list_local_backups() ], 1, 0, 1));
+	print &ui_table_row($text{'import_confirm'}, &ui_select("imp_jail", "$text{'import_combobox'}", [ &list_local_backups() ], 1, 0, 1));
 }
 
 print &ui_table_end();

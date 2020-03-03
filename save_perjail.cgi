@@ -10,9 +10,9 @@ require './bastille-lib.pl';
 my $editfile = "$module_config_directory/last_edit";
 if (open(my $fh, '<:encoding(UTF-8)', $editfile)) {
 	while (my $row = <$fh>) {
-	chomp $row;
-	$line = "$row\n";
-	$line =~ s/\s+//g;
+		chomp $row;
+		$line = "$row\n";
+		$line =~ s/\s+//g;
 	}
 }
 my $jail = $line;
