@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.3.1..........Fix fstab entry to use absolute path and cleanup.
 0.3.0..........Default to backquote_command and code cleanup.
 0.2.9..........Display IPv6 in the main status tab.
 0.2.8..........Add support for IPv6 and VNET(VIMAGE).

@@ -38,7 +38,8 @@ if ($in{'dirmod'} == 1 ) {
 }
 
 $makedir = $mkdir;
-$targetdir = "$config{'bastille_jailpath'}/$name/root$in{'target'}";
+#$targetdir = "$config{'bastille_jailpath'}/$name/root$in{'target'}";
+$targetdir = "$in{'target'}";
 
 if ($in{'source'} && $in{'target'}) {
 	$cmdline = "\"$source	$targetdir	$dirmod\"";
