@@ -62,6 +62,12 @@ sub list_base_release
 sub get_local_releases
 {
 	# Use ls command, otherwise use bastille internal command to list all bases.
+	my $releases = &backquote_command("echo \$(ls $config{'bastille_relpath'})");
+}
+
+sub get_installed_releases
+{
+	# Use ls command, otherwise use bastille internal command to list all bases.
 	my $releases = &backquote_command("echo \$(ls $config{'bastille_relpath'}) | sed 's/\ /,\ /g'");
 }
 
@@ -78,7 +84,7 @@ sub options_support
 
 sub get_local_osrelease
 {
-	my $osrelaese = &backquote_command("uname -r | sed 's/-p.*//'");
+	my $osrelaese = &backquote_command("freebsd-version | sed 's/\-[pP].*//'");
 }
 
 sub list_ipv4_netmask
@@ -405,19 +411,7 @@ sub jail_create_cmd
 			$option2 = "";
 		}
 
-		if ($nicset) {
-			if ($nicset eq "NONE") {
-				$opt = "";
-			}
-		else {
-			$opt = $nicset;
-			}
-		}
-		else {
-			$opt = "";
-		}
-
-		my $cmd = "$cmdline $opt";
+		my $cmd = "$cmdline";
 		local $out = &backquote_command("$config{'bastille_path'} create $option $option2 $cmd 2>&1 </dev/null");
 
 		return "<pre>$out</pre>" if ($?);

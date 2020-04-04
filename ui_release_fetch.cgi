@@ -10,7 +10,7 @@ my $sys_base_rel = "DAFAULT";
 print &ui_form_start("fetch_release.cgi");
 print &ui_table_start($text{'download_dl'}, "width=100%", 2);
 
-my $rels = &get_local_releases();
+my $rels = &get_installed_releases();
 if ($rels) {
 	$rellist = $rels;
 } else {
@@ -33,4 +33,3 @@ print &ui_buttons_row("fetch_release.cgi", $text{'download_button'}, "<b>$text{'
 print &ui_buttons_end();
 
 &ui_print_footer("", $text{'index_return'});
-

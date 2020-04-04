@@ -7,8 +7,8 @@ require './bastille-lib.pl';
 &ui_print_header(undef, $text{'index_title'}, "", "intro");
 
 # Start jail create.
-my $nic_def = "none";
-my $release_def = "none";
+my $nic_def = "default";
+my $release_def = "default";
 my $thick_jail = &options_support();
 my $vnet_jail = &options_support();
 
@@ -22,15 +22,9 @@ if ($config{'show_advanced'}) {
 	print &ui_table_row($text{'create_ipv4'},
 		&ui_textbox("ip4", $jip4, 30, ));
 
-	print &ui_table_row($text{'create_network'},
-		&ui_radio("nic_def", $nic ? 0 : 1,
-			[ [ 1, $text{'create_preset'} ], [ 0, &ui_select("nic", uc($nic_def),
-				[ &list_local_nics() ], 1, 0, "nic_def" ? 1 : 0) ] ]));
+	print &ui_table_row($text{'create_network'}, &ui_select("nic", uc($nic_def), [ &list_local_nics() ], 1, 0, 1));
 
-	print &ui_table_row($text{'create_reltype'},
-		&ui_radio("release_def", $rel ? 0 : 1, [ [ 1, $text{'create_preset'} ],
-			[ 0, &ui_select("rel", uc($release_def), [ &list_local_rels() ], 1, 0,
-				"release_def" ? 1 : 0) ] ]));
+	print &ui_table_row($text{'create_reltype'}, &ui_select("rel", uc($release_def), [ &list_local_rels() ], 1, 0, 1));
 
 	if ($thick_jail) {
 		$thick = "no";

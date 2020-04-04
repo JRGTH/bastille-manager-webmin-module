@@ -6,6 +6,8 @@ require './bastille-lib.pl';
 &ReadParse();
 &error_setup($text{'create_err'});
 
+my $sys_release = &get_local_osrelease();
+
 # Construct command and arguments.
 if ($in{'name'}) {
 	$name = "$in{'name'}";
@@ -19,24 +21,38 @@ if ($in{'ip4'}) {
 	$ip4 = "";
 }
 
-if ($in{'nic_def'} == 0) {
-	$nic = "$in{'nic'}";
+#if ($in{'nic_def'} == 0) {
+#	$nic = "$in{'nic'}";
+#} else {
+#	$nic = "";
+#}
+
+if ($in{'nic'} eq "DEFAULT") {
+	$netif = "";
 } else {
-	$nic = "";
+	$netif = "$in{'nic'}";
 }
 
-if($in{'release_def'} == 0) {
-	if($in{'rel'} eq "NONE") {
-		$rel = "";
-	} else {
-		$rel = "$in{'rel'}";
-		$rel =~ s/NONE//;
-	}
+#if($in{'release_def'} == 0) {
+#	if($in{'rel'} eq "DEFAULT") {
+#		$rel = "";
+#	} else {
+#		$rel = "$in{'rel'}";
+#		$rel =~ s/DEFAULT//;
+#	}
+#} else {
+#	$rel = "";
+#}
+
+if($in{'rel'} eq "DEFAULT") {
+	$rel = $sys_release;
+	$rel =~ s/\s+//g;
 } else {
-	$rel = "";
+	$rel = "$in{'rel'}";
+	#$rel =~ s/DEFAULT//;
 }
 
-$cmdline = "$name $rel $ip4";
+$cmdline = "$name $rel $ip4 $netif";
 $nicset= "$nic";
 
 $err = &jail_create_cmd();
