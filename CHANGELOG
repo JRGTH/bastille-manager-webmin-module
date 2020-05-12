@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.3.3..........Filter out ANSI output, update version in module.info.
 0.3.2..........Cosmetic changes, improvements and fixes.
 0.3.1..........Fix fstab entry to use absolute path and cleanup.
 0.3.0..........Default to backquote_command and code cleanup.

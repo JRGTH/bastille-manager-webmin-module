@@ -31,7 +31,7 @@ else {
 # get_bastille_version()
 sub get_bastille_version
 {
-	my $version = &backquote_command('bastille -v | perl -pe "s/\e\[[0-9;]*m//g"');
+	my $version = &backquote_command("$config{'bastille_path'} -v | perl -pe 's/\e\[[][A-Za-z0-9];?[0-9]*m?//g'");
 }
 
 sub get_local_nics
@@ -365,6 +365,7 @@ sub start_jail
 	my $jails = $in{'jails'};
 	if ($config{'show_cmd'}) {
 		local $out = &backquote_command("$config{'start_cmd'} $jails 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
@@ -376,6 +377,7 @@ sub stop_jail
 	my $jails = $in{'jails'};
 	if ($config{'show_cmd'}) {
 		local $out = &backquote_command("$config{'stop_cmd'} $jails 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
@@ -387,6 +389,7 @@ sub restart_jail
 	my $jails = $in{'jails'};
 	if ($config{'show_cmd'}) {
 		local $out = &backquote_command("$config{'restart_cmd'} $jails 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
@@ -413,7 +416,7 @@ sub jail_create_cmd
 
 		my $cmd = "$cmdline";
 		local $out = &backquote_command("$config{'bastille_path'} create $option $option2 $cmd 2>&1 </dev/null");
-
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
@@ -428,6 +431,7 @@ sub destroy_jail_cmd
 			$item = "";
 		}
 		local $out = &backquote_command("$config{'bastille_path'} destroy $item 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
@@ -451,6 +455,7 @@ sub jail_addfstab_cmd
 		my $cmd = $cmdline;
 		if ($cmd) {
 			local $out = &backquote_command("echo $cmd >> $config{'bastille_jailpath'}/$name/fstab 2>&1 </dev/null");
+			$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 			return "<pre>$out</pre>" if ($?);
 		}
 	}
@@ -480,6 +485,7 @@ sub download_release_cmd
 		}
 
 		local $out = &backquote_command("$config{'bastille_path'} bootstrap $cmd 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 
 		# Set back default distfiles.
@@ -493,6 +499,7 @@ sub export_jail_cmd
 	if ($config{'show_advanced'}) {
 		my $item = $in{'exp_jail'};
 		local $out = &backquote_command("$config{'bastille_path'} export $item 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
@@ -503,6 +510,7 @@ sub import_jail_cmd
 	if ($config{'show_advanced'}) {
 		my $item = $in{'imp_jail'};
 		local $out = &backquote_command("$config{'bastille_path'} import $item 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
@@ -513,6 +521,7 @@ sub delete_release_cmd
 	if ($config{'show_advanced'}) {
 		my $cmd = $in{'release'};
 		local $out = &backquote_command("$config{'bastille_path'} destroy $cmd 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
