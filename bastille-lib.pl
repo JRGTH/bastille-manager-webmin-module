@@ -187,18 +187,24 @@ sub ui_jail_res
 		if (!$jid) {
 			$jid = "-";
 		}
-
+		# Try to get ipv6 instead.
 		if (!$ipvx) {
 			$ipvx = &backquote_command("/usr/bin/grep -w 'ip6.addr' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'");
+		}
+		# Try to get ip from vnet config.
+		if (!$ipvx) {
+			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key cat /etc/rc.conf | /usr/bin/grep 'ifconfig_vnet0=' | cut -d'\"' -f2 | sed 's/inet //'");
+		}
+		# Try to get ip from ifconfig as last resort.
+		if (!$ipvx) {
+			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key ifconfig | /usr/bin/grep 'inet' | awk '{print \$2}' | awk 'NR==1'");
 		}
 		if (!$ipvx) {
 			$ipvx = "-";
 		}
-
 		if (!$interface) {
 			$interface = "-";
 		}
-
 		if (!$osrel) {
 			$osrel = "-";
 		}
