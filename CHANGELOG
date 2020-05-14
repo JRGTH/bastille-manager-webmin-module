@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.3.5..........Get ip from ifconfig vnet0 if can't read config.
 0.3.4..........Display static inet ip from vnet jail config.
 0.3.3..........Filter out ANSI output, update version in module.info.
 0.3.2..........Cosmetic changes, improvements and fixes.

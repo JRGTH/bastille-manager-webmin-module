@@ -196,8 +196,10 @@ sub ui_jail_res
 			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key cat /etc/rc.conf | /usr/bin/grep 'ifconfig_vnet0=' | cut -d'\"' -f2 | sed 's/inet //'");
 		}
 		# Try to get ip from ifconfig as last resort.
+		# Netmask need conversion from hex to dec.
 		if (!$ipvx) {
-			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key ifconfig | /usr/bin/grep 'inet' | awk '{print \$2}' | awk 'NR==1'");
+			#$netmask_hex = &backquote_command("$config{'bastille_path'} cmd $key ifconfig vnet0 | /usr/bin/grep 'inet' | /usr/bin/awk '{print \$4}'");
+			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key ifconfig vnet0 | /usr/bin/grep 'inet' | /usr/bin/awk '{print \$2}'");
 		}
 		if (!$ipvx) {
 			$ipvx = "-";
