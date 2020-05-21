@@ -52,8 +52,12 @@ if($in{'rel'} eq "DEFAULT") {
 	#$rel =~ s/DEFAULT//;
 }
 
-$cmdline = "$name $rel $ip4 $netif";
-$nicset= "$nic";
+if ($in{'emptyjail'} == 1) {
+	$cmdline = "$name";
+} else {
+	$cmdline = "$name $rel $ip4 $netif";
+	$nicset = "$nic";
+}
 
 $err = &jail_create_cmd();
 &error($err) if ($err);

@@ -11,6 +11,7 @@ my $nic_def = "default";
 my $release_def = "default";
 my $thick_jail = &options_support();
 my $vnet_jail = &options_support();
+my $empty_jail = &options_support();
 
 print &ui_form_start("create.cgi");
 print &ui_table_start($text{'manual_createjail'}, "width=100%", 2);
@@ -37,6 +38,13 @@ if ($config{'show_advanced'}) {
 		print &ui_table_row($text{'create_vnetjail'},
 			&ui_yesno_radio("vnet", lc($vnet) eq 'no' ? 0 : lc($vnet) eq 'yes' ? 1 : 1));
 	}
+
+	if ($empty_jail) {
+		$emptyjail = "no";
+		print &ui_table_row($text{'create_emptyjail'},
+			&ui_yesno_radio("emptyjail", lc($emptyjail) eq 'no' ? 0 : lc($emptyjail) eq 'yes' ? 1 : 1));
+	}
+
 }
 print &ui_table_end();
 print &ui_buttons_start();

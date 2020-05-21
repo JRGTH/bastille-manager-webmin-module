@@ -407,23 +407,23 @@ sub restart_jail
 sub jail_create_cmd
 {
 	if ($config{'show_advanced'}) {
+		$option = "";
 
-		if ($in{'thick'} == 1 ) {
-			$option = "-T";
-		}
-		else {
-			$option = "";
-		}
-
-		if ($in{'vnet'} == 1 ) {
-			$option2 = "-V";
-		}
-		else {
-			$option2 = "";
+		if ($in{'emptyjail'} == 1) {
+			# Just create an empty container with minimal jail.conf.
+			$option = "-E";
+		} else {
+			if (($in{'thick'} == 1) && ($in{'vnet'} == 1)) {
+				$option = "-T -V";
+			 } elsif ($in{'thick'} == 1 ) {
+				$option = "-T";
+			} elsif ($in{'vnet'} == 1 ) {
+				$option = "-V";
+			}
 		}
 
 		my $cmd = "$cmdline";
-		local $out = &backquote_command("$config{'bastille_path'} create $option $option2 $cmd 2>&1 </dev/null");
+		local $out = &backquote_command("$config{'bastille_path'} create $option $cmd 2>&1 </dev/null");
 		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}

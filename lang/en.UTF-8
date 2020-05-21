@@ -66,6 +66,7 @@ create_relnote=Create a jail with the previous entered parameters.
 create_jailprefix=Current jail path default prefix
 create_thickjail=Create a Thickjail
 create_vnetjail=Enable VNET(VIMAGE)
+create_emptyjail=Create an Empty jail
 
 delete_button=Delete
 delete_err=Failed to destroy bastille jail
