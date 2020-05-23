@@ -211,11 +211,16 @@ sub ui_jail_res
 			$osrel = "-";
 		}
 
-		$custom_icon = "./images/$key\_icon.png";
+		# Display custom template icons if available.
+		$custom_icon = "./images/addons/$key\_icon.png";
+		$plugin_icon = "$config{'bastille_jailpath'}/$key/plugin_icon.png";
+		if ((-e $plugin_icon) && (!-e $custom_icon)) {
+			&backquote_command("/bin/cp $plugin_icon $custom_icon");
+		}
 		if (-e $custom_icon) {
-			$template_icon = "./images/$key\_icon.png";
+			$template_icon = "./images/addons/$key\_icon.png";
 		} else {
-			$template_icon = "./images/bsd_icon.png";
+			$template_icon = "./images/addons/bsd_icon.png";
 		}
 
 		if ($config{'show_cmd'}) {
@@ -434,11 +439,17 @@ sub jail_create_cmd
 sub destroy_jail_cmd
 {
 	if ($config{'show_destroy'}) {
-		read_last_edit();
+		&read_last_edit();
 		if ($item ne $in{'name'}) {
 			$item = "";
 		}
-		local $out = &backquote_command("$config{'bastille_path'} destroy $item 2>&1 </dev/null");
+		$template_icon = "./images/addons/$item\_icon.png";
+		if (-e $template_icon) {
+			$destroy_cmd = &backquote_command("$config{'bastille_path'} destroy $item && /bin/rm $template_icon 2>&1 </dev/null");
+		} else {
+			$destroy_cmd = &backquote_command("$config{'bastille_path'} destroy $item 2>&1 </dev/null");
+		}
+		local $out = $destroy_cmd;
 		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
@@ -449,7 +460,7 @@ sub destroy_jail_cmd
 sub jail_addfstab_cmd
 {
 	if ($config{'show_advanced'}) {
-		read_last_edit();
+		&read_last_edit();
 		if ($item ne $in{'name'}) {
 			$item = "";
 		}
