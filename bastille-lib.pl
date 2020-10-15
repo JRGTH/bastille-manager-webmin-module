@@ -79,7 +79,8 @@ my $restart_icon = "./images/restart.png";
 # Check if bastille support for options
 sub options_support
 {
-	my $options_support = &backquote_command("$config{'bastille_path'} create | /usr/bin/grep -wo 'option'");
+	#my $options_support = &backquote_command("$config{'bastille_path'} create | /usr/bin/grep -wo 'option'");
+	my $options_support = "yes";
 }
 
 sub get_local_osrelease

@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.3.8..........Fix to enable all create options by default.
 0.3.7..........Improved the plugins icon handling.
 0.3.6..........Add ability to create empty containers, minor improvements.
 0.3.5..........Get ip from ifconfig vnet0 if can't read config.
