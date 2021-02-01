@@ -55,7 +55,7 @@ sub list_local_backups
 
 sub list_base_release
 {
-	my @baserels = qw( 12.1-RELEASE 12.0-RELEASE 11.3-RELEASE 11.2-RELEASE );
+	my @baserels = qw( 13.0-CURRENT 12.2-RELEASE 12.1-RELEASE 12.0-RELEASE 11.3-RELEASE 11.2-RELEASE );
 	return ( @baserels );
 }
 
@@ -509,7 +509,7 @@ sub download_release_cmd
 			$cmd = $selection;
 		}
 
-		local $out = &backquote_command("$config{'bastille_path'} bootstrap $cmd 2>&1 </dev/null");
+		local $out = &backquote_command("/bin/echo 'Y' | $config{'bastille_path'} bootstrap $cmd 2>&1 </dev/null");
 		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 
