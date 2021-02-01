@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.3.9..........Enhancements for the backup and restore functionality.
 0.3.8..........Fix to enable all create options by default.
 0.3.7..........Improved the plugins icon handling.
 0.3.6..........Add ability to create empty containers, minor improvements.

@@ -97,6 +97,9 @@ export_err=Failed to export jail
 export_dlnote=Click to export the selected jail, this may take several minutes.
 export_combobox=Select item...
 export_button=Save
+export_expath=Export path(optional)
+export_txz=Standard TXZ archive
+export_safebackup=Safe mode ZFS export
 
 import_tittle=Restore a Jail
 import_icontext=Restore a Jail
@@ -105,3 +108,5 @@ import_err=Failed to import jail
 import_dlnote=Click to import the selected jail, this may take several minutes.
 import_combobox=Select item...
 import_button=Save
+import_force=Force import
+import_path=Import from path/file(overrides select)

@@ -71,6 +71,11 @@ sub get_installed_releases
 	my $releases = &backquote_command("echo \$(ls $config{'bastille_relpath'}) | sed 's/\ /,\ /g'");
 }
 
+sub get_zfs_mode
+{
+	my $zfsmode = &backquote_command("/usr/bin/grep 'bastille_zfs_enable=' $config{'bastille_confpath'} | cut -d'\"' -f2");
+}
+
 # Set action buttons.
 my $start_icon = "./images/start.png";
 my $stop_icon = "./images/stop.png";
@@ -517,8 +522,22 @@ sub download_release_cmd
 sub export_jail_cmd
 {
 	if ($config{'show_advanced'}) {
+		$export_opt="";
+		$export_path="";
+		if (($in{'txz_archive'} == 1) && ($in{'safe_zfsexp'} ==1)) {
+			$export_opt = "-t";
+			}
+		elsif ($in{'txz_archive'} == 1) {
+			$export_opt = "-t";
+			}
+		elsif ($in{'safe_zfsexp'} ==1) {
+			$export_opt = "-s";
+		}
+		if ($in{'exp_path'}) {
+			$export_path = $in{'exp_path'};
+		}
 		my $item = $in{'exp_jail'};
-		local $out = &backquote_command("$config{'bastille_path'} export $item 2>&1 </dev/null");
+		local $out = &backquote_command("$config{'bastille_path'} export $item $export_opt $export_path 2>&1 </dev/null");
 		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
@@ -528,8 +547,15 @@ sub export_jail_cmd
 sub import_jail_cmd
 {
 	if ($config{'show_advanced'}) {
+		$force_opt="";
+		if ($in{'force_import'} == 1) {
+			$force_opt = "-f";
+		}
 		my $item = $in{'imp_jail'};
-		local $out = &backquote_command("$config{'bastille_path'} import $item 2>&1 </dev/null");
+		if ($in{'from_path'}) {
+			$item = $in{'from_path'};
+		}
+		local $out = &backquote_command("$config{'bastille_path'} import $item $force_opt 2>&1 </dev/null");
 		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
 		return "<pre>$out</pre>" if ($?);
 	}
