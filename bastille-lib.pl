@@ -55,7 +55,7 @@ sub list_local_backups
 
 sub list_base_release
 {
-	my @baserels = qw( 13.0-CURRENT 12.2-RELEASE 12.1-RELEASE 12.0-RELEASE 11.3-RELEASE 11.2-RELEASE );
+	my @baserels = split(' ', $config{'bastille_releases'});
 	return ( @baserels );
 }
 
@@ -161,6 +161,23 @@ sub list_res
 {
 	my %jailr=();
 	my $list=&backquote_command("$config{'bastille_path'} list jail");
+	open my $fh, "<", \$list;
+	while (my $line =<$fh>) {
+		chomp ($line);
+		my @props = split(" ", $line);
+		$ct = 1;
+		foreach $prop (split(",", $props_res)) {
+			$jailr{$props[0]}{$prop} = $props[$ct];
+			$ct++;
+		}
+	}
+	return %jailr;
+}
+
+sub list_release
+{
+	my %jailr=();
+	my $list=&backquote_command("$config{'bastille_path'} list release");
 	open my $fh, "<", \$list;
 	while (my $line =<$fh>) {
 		chomp ($line);
@@ -295,6 +312,21 @@ sub ui_perjail_destroy
 		foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
 		print &ui_columns_row(["<a href='ui_jail_destroy.cgi?jailr=$key'>$key</a>",
 			"<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>" ]);
+	}
+	&unlink_record();
+	print &ui_columns_end();
+}
+
+sub ui_release_destroy
+{
+	my %jailr = list_release($jailr);
+	@props = split(/,/, $props_res);
+	print &ui_columns_start([ "NAME", "PATH" ]);
+	foreach $key (sort(keys %jailr)) {
+		@vals = ();
+		foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
+		print &ui_columns_row(["<a href='ui_jail_destroy.cgi?jailr=$key'>$key</a>",
+			"<a href='../filemin/index.cgi?path=$config{'bastille_relpath'}/$key'>$config{'bastille_jailpath'}/$key</a>" ]);
 	}
 	&unlink_record();
 	print &ui_columns_end();
@@ -493,7 +525,7 @@ sub download_release_cmd
 		my $selection = $in{'release'};
 		my $sysrelease = &get_local_osrelease();
 		my $opt_distfiles = "$in{'opt_lib32'} $in{'opt_ports'} $in{'opt_src'}";
-		my $def_distfiles = &backquote_command("/bin/cat $config{'bastille_confpath'} | /usr/bin/grep 'bastille_bootstrap_archives=' | /usr/bin/cut -d'\"' -f2");
+		my $def_distfiles = &backquote_command("/usr/sbin/sysrc -f $config{'bastille_confpath'} -n bastille_bootstrap_archives");
 		$opt_distfiles =~ s/\s+$//;
 		$def_distfiles =~ s/\s+$//;
 
@@ -514,7 +546,9 @@ sub download_release_cmd
 		return "<pre>$out</pre>" if ($?);
 
 		# Set back default distfiles.
-		&backquote_command("/usr/sbin/sysrc -f $config{'bastille_confpath'} bastille_bootstrap_archives=\"$def_distfiles\"");
+		if ($opt_distfiles) {
+			&backquote_command("/usr/sbin/sysrc -f $config{'bastille_confpath'} bastille_bootstrap_archives=\"$def_distfiles\"");
+		}
 	}
 	return undef;
 }

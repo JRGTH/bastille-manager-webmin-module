@@ -3,6 +3,7 @@ bastille_path=Full path to bastille program,0
 bastille_confpath=Full path to bastille default config file,0
 bastille_relpath=Full path to bastille default releases directory,0
 bastille_jailpath=Full path to bastille default jail directory,0
+bastille_releases=Set available releases for download (space separated),0
 show_templates=Display custom template icons,1,1-Enabled,0-Disabled
 show_conf=Enable config editor,1,1-Enabled,0-Disabled
 show_advanced=Enable management tasks,1,1-Enabled,0-Disabled

@@ -7,6 +7,7 @@ bastille_path=/usr/local/bin/bastille
 bastille_confpath=/usr/local/etc/bastille/bastille.conf
 bastille_relpath=/zroot/bastille/releases
 bastille_jailpath=/zroot/bastille/jails
+bastille_releases=13.0-RELEASE 12.2-RELEASE 11.4-RELEASE
 start_cmd=bastille start
 stop_cmd=bastille stop
 restart_cmd=bastille restart
