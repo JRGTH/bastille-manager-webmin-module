@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.4.2..........Fix bug to display correct VNET interface, update export commands.
 0.4.1..........Add releases list to config, enhancements and fixes.
 0.4.0..........Fix to work with later bastille releases.
 0.3.9..........Enhancements for the backup and restore functionality.

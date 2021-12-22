@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+﻿#!/usr/local/bin/perl
 # bastille-lib.pl
 
 BEGIN { push(@INC, ".."); };
@@ -32,6 +32,11 @@ else {
 sub get_bastille_version
 {
 	my $version = &backquote_command("$config{'bastille_path'} -v | perl -pe 's/\e\[[][A-Za-z0-9];?[0-9]*m?//g'");
+}
+
+sub get_bastille_version_min
+{
+	my $version = &backquote_command("$config{'bastille_path'} -v | perl -pe 's/\e\[[][A-Za-z0-9];?[0-9]*m?//g;s/\.//g'");
 }
 
 sub get_local_nics
@@ -204,7 +209,7 @@ sub ui_jail_res
 		# Get some jail info from either jls or config.
 		$jid = &backquote_command("/usr/sbin/jls -j $key | /usr/bin/awk '/$key/ {print \$1}'");
 		$ipvx = &backquote_command("/usr/bin/grep -w 'ip4.addr' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'");
-		$interface = &backquote_command("/usr/bin/grep -w 'interface' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'");
+		$interface = &backquote_command("/usr/bin/grep -wE 'interface.*=.*;|vnet.interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'");
 		$osrel = &backquote_command("/usr/sbin/jexec $key freebsd-version 2>/dev/null");
 
 		if (!$jid) {
@@ -558,22 +563,22 @@ sub export_jail_cmd
 	if ($config{'show_advanced'}) {
 		$export_opt="";
 		$export_path="";
-		if (($in{'txz_archive'} == 1) && ($in{'safe_zfsexp'} ==1)) {
-			$export_opt = "-t";
+		if (($in{'txz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
+			$export_opt = "--safe --txz";
 			}
 		elsif ($in{'txz_archive'} == 1) {
-			$export_opt = "-t";
+			$export_opt = "--txz";
 			}
-		elsif ($in{'safe_zfsexp'} ==1) {
-			$export_opt = "-s";
+		elsif ($in{'safe_zfsexp'} == 1) {
+			$export_opt = "--safe --xz";
 		}
 		if ($in{'exp_path'}) {
 			$export_path = $in{'exp_path'};
 		}
-		my $item = $in{'exp_jail'};
-		local $out = &backquote_command("$config{'bastille_path'} export $item $export_opt $export_path 2>&1 </dev/null");
-		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
-		return "<pre>$out</pre>" if ($?);
+			my $item = $in{'exp_jail'};
+			local $out = &backquote_command("$config{'bastille_path'} export $export_opt $item $export_path 2>&1 </dev/null");
+			$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
+			return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
 }
