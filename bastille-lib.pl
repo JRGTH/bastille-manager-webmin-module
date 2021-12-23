@@ -248,7 +248,12 @@ sub ui_jail_res
 		if (-e $custom_icon) {
 			$template_icon = "./images/addons/$key\_icon.png";
 		} else {
-			$template_icon = "./images/addons/bsd_icon.png";
+			$is_linuxjail = &backquote_command("/usr/bin/grep linsysfs $config{'bastille_jailpath'}/$key/fstab");
+			if ($is_linuxjail) {
+				$template_icon = "./images/linux_icon.png";
+			} else {
+				$template_icon = "./images/bsd_icon.png";
+				}
 		}
 
 		if ($config{'show_cmd'}) {
@@ -459,6 +464,12 @@ sub jail_create_cmd
 
 		if ($in{'emptyjail'} == 1) {
 			# Just create an empty container with minimal jail.conf.
+			$option = "-E";
+		} elsif ($in{'linuxjail'} == 1) {
+			# Just create an linux container(experimental).
+			$option = "-L";
+		} elsif (($in{'emptyjail'} == 1) && ($in{'linuxjail'} == 1)) {
+			# Just create an empty container, overrides all other options.
 			$option = "-E";
 		} else {
 			if (($in{'thick'} == 1) && ($in{'vnet'} == 1)) {

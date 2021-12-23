@@ -12,6 +12,7 @@ my $release_def = "default";
 my $thick_jail = &options_support();
 my $vnet_jail = &options_support();
 my $empty_jail = &options_support();
+my $linux_jail = &options_support();
 
 print &ui_form_start("create.cgi");
 print &ui_table_start($text{'manual_createjail'}, "width=100%", 2);
@@ -43,6 +44,14 @@ if ($config{'show_advanced'}) {
 		$emptyjail = "no";
 		print &ui_table_row($text{'create_emptyjail'},
 			&ui_yesno_radio("emptyjail", lc($emptyjail) eq 'no' ? 0 : lc($emptyjail) eq 'yes' ? 1 : 1));
+	}
+
+	if ($config{'show_linux'}) {
+		if ($linux_jail) {
+			$linuxjail = "no";
+			print &ui_table_row($text{'create_linuxjail'},
+				&ui_yesno_radio("linuxjail", lc($linuxjail) eq 'no' ? 0 : lc($linuxjail) eq 'yes' ? 1 : 1));
+		}
 	}
 
 }

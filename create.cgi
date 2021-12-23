@@ -48,6 +48,19 @@ if($in{'rel'} eq "DEFAULT") {
 	$rel = $sys_release;
 	$rel =~ s/\s+//g;
 } else {
+
+	if ($config{'show_linux'}) {
+		if($in{'rel'} eq 'Ubuntu_1804') {
+			$in{'rel'} = "ubuntu-bionic";
+		} elsif($in{'rel'} eq 'Ubuntu_2004') {
+			$in{'rel'} = "ubuntu-focal";
+		} elsif($in{'rel'} eq 'Debian9') {
+			$in{'rel'} = "debian-stretch";
+		} elsif($in{'rel'} eq 'Debian10') {
+			$in{'rel'} = "debian-buster";
+		}
+	}
+
 	$rel = "$in{'rel'}";
 	#$rel =~ s/DEFAULT//;
 }

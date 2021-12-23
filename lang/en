@@ -68,6 +68,7 @@ create_jailprefix=Current jail path default prefix
 create_thickjail=Create a Thickjail
 create_vnetjail=Enable VNET(VIMAGE)
 create_emptyjail=Create an Empty jail
+create_linuxjail=Create an Linux jail
 
 delete_button=Delete
 delete_err=Failed to destroy bastille jail

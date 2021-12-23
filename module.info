@@ -2,4 +2,4 @@ desc=Bastille Manager
 name=Bastille
 longdesc_en=Bastille Jail Manager for Webmin
 os_support=freebsd
-version=0.4.2
+version=0.4.3

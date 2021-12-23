@@ -8,6 +8,7 @@ show_templates=Display custom template icons,1,1-Enabled,0-Disabled
 show_conf=Enable config editor,1,1-Enabled,0-Disabled
 show_advanced=Enable management tasks,1,1-Enabled,0-Disabled
 show_destroy=Enable destructive tasks,1,1-Enabled,0-Disabled
+show_linux=Enable Linux jails creation,1,1-Enabled,0-Disabled
 show_cmd=Enable start stop and restart,1,1-Enabled,0-Disabled
 start_cmd=Command to start jail,0
 stop_cmd=Command to stop jail,0

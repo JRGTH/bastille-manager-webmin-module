@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.4.3..........Add option to create Linux jails from the UI.
 0.4.2..........Fix bug to display correct VNET interface, update export commands.
 0.4.1..........Add releases list to config, enhancements and fixes.
 0.4.0..........Fix to work with later bastille releases.
