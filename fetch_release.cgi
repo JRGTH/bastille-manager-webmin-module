@@ -2,7 +2,7 @@
 # fetch_release.cgi
 # Download FreeBSD base release
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &error_setup($text{'download_dlerr'});
 $err = &download_release_cmd();

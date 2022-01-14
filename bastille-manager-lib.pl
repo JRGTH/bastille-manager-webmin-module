@@ -1,5 +1,5 @@
 ﻿#!/usr/local/bin/perl
-# bastille-lib.pl
+# bastille-manager-lib.pl
 
 BEGIN { push(@INC, ".."); };
 use WebminCore;

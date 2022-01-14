@@ -2,7 +2,7 @@
 # create.cgi
 # Create standard bastille jail
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &error_setup($text{'create_err'});
 

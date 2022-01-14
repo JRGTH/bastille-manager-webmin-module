@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 # install_check.pl
 
-do 'bastille-lib.pl';
+do 'bastille-manager-lib.pl';
 
 # is_installed(mode)
 # For mode 1, returns 2 if the server is installed and configured for use by

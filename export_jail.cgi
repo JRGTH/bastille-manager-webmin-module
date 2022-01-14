@@ -2,7 +2,7 @@
 # export_jail.cgi
 # Export FreeBSD jail
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &error_setup($text{'export_err'});
 $err = &export_jail_cmd();

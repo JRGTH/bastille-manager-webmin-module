@@ -2,7 +2,7 @@
 # fstab_create.cgi
 # Manipulate jail fstab
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &error_setup($text{'create_errfstab'});
 

@@ -2,7 +2,7 @@
 # destroy.cgi
 # Destroy bastille jail
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &error_setup($text{'delete_err'});
 $err = &destroy_jail_cmd();

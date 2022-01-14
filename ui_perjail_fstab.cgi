@@ -2,7 +2,7 @@
 # ui_perjail_fstab.cgi
 # Show a page for manipulate jail fstab
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &ui_print_header(undef, $text{'index_title'}, "");
 

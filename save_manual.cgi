@@ -2,7 +2,7 @@
 # save_manual.cgi
 # Update a manually edited config file
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &error_setup($text{'manual_err'});
 &ReadParseMime();
 

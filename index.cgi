@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 # index.cgi
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 
 # Check if bastille exists.
 if (!&has_command($config{'bastille_path'})) {

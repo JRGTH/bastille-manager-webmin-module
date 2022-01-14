@@ -2,7 +2,7 @@
 # ui_jail_destroy.cgi
 # Show a page for manually confirm for destroy an bastille jail
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &ui_print_header(undef, $text{'index_title'}, "");
 

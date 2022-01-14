@@ -2,7 +2,7 @@
 # stop.cgi
 # Stop bastille jail
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &error_setup($text{'stop_err'});
 $err = &stop_jail();

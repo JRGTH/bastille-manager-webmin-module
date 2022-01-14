@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 # Show a page for manually download a FreeBSD base release
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &ui_print_header(undef, $text{'index_title'}, "");
 

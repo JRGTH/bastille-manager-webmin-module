@@ -2,7 +2,7 @@
 # import_jail.cgi
 # Import FreeBSD jail
 
-require './bastille-lib.pl';
+require './bastille-manager-lib.pl';
 &ReadParse();
 &error_setup($text{'import_err'});
 $err = &import_jail_cmd();
