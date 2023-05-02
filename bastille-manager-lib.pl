@@ -28,6 +28,11 @@ else {
 	}
 }
 
+sub get_export_options
+{
+	my $def_export_opts = &backquote_command("/usr/bin/grep 'bastille_export_options=' $config{'bastille_confpath'} | cut -d '\"' -f2");
+}
+
 # get_bastille_version()
 sub get_bastille_version
 {
@@ -208,17 +213,17 @@ sub ui_jail_res
 
 		# Get some jail info from either jls or config.
 		$jid = &backquote_command("/usr/sbin/jls -j $key | /usr/bin/awk '/$key/ {print \$1}'");
-		$ipvx = &backquote_command("/usr/bin/grep -w 'ip4.addr' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'");
-		$interface = &backquote_command("/usr/bin/grep -wE 'interface.*=.*;|vnet.interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'");
+		$ipvx = &backquote_command("/usr/bin/grep '.*ip.*.addr.*=.*' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
+		$interface = &backquote_command("/usr/bin/grep -E '.*interface.*=.*;|.*vnet.interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
 		$osrel = &backquote_command("/usr/sbin/jexec $key freebsd-version 2>/dev/null");
 
 		if (!$jid) {
 			$jid = "-";
 		}
 		# Try to get ipv6 instead.
-		if (!$ipvx) {
-			$ipvx = &backquote_command("/usr/bin/grep -w 'ip6.addr' $config{'bastille_jailpath'}/$key/jail.conf | /usr/bin/awk '{print \$3}' | /usr/bin/tr -d ';'");
-		}
+		#if (!$ipvx) {
+		#	$ipvx = &backquote_command("/usr/bin/grep '.*ip6.addr.*=' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
+		#}
 		# Try to get ip from vnet config.
 		if (!$ipvx) {
 			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key cat /etc/rc.conf | /usr/bin/grep 'ifconfig_vnet0=' | cut -d'\"' -f2 | sed 's/inet //'");
@@ -574,15 +579,44 @@ sub export_jail_cmd
 	if ($config{'show_advanced'}) {
 		$export_opt="";
 		$export_path="";
-		if (($in{'txz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
-			$export_opt = "--safe --txz";
+		$export_defaults = &get_export_options();
+
+		if ($export_defaults =~ /^ *$/) {
+			if (($in{'raw_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
+				$export_opt = "--safe --raw";
 			}
-		elsif ($in{'txz_archive'} == 1) {
-			$export_opt = "--txz";
+			elsif ($in{'raw_archive'} == 1) {
+				$export_opt = "--raw";
 			}
-		elsif ($in{'safe_zfsexp'} == 1) {
-			$export_opt = "--safe --xz";
+			elsif (($in{'gz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
+				$export_opt = "--safe --gz";
+			}
+			elsif ($in{'gz_archive'} == 1) {
+				$export_opt = "--gz";
+			}
+			elsif (($in{'xz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
+				$export_opt = "--safe --xz";
+			}
+			elsif ($in{'xz_archive'} == 1) {
+				$export_opt = "--xz";
+			}
+			elsif (($in{'tgz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
+				$export_opt = "--tgz";
+			}
+			elsif ($in{'tgz_archive'} == 1) {
+				$export_opt = "--tgz";
+			}
+			elsif (($in{'txz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
+				$export_opt = "--txz";
+			}
+			elsif ($in{'txz_archive'} == 1) {
+				$export_opt = "--txz";
+			}
+			elsif ($in{'safe_zfsexp'} == 1) {
+				$export_opt = "--safe --xz";
+			}
 		}
+
 		if ($in{'exp_path'}) {
 			$export_path = $in{'exp_path'};
 		}

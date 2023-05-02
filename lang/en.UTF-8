@@ -100,7 +100,12 @@ export_dlnote=Click to export the selected jail, this may take several minutes.
 export_combobox=Select item...
 export_button=Save
 export_expath=Export path(optional)
+export_raw=Uncompressed image
+export_gz=Compressed GZ image
+export_xz=Compressed XZ image
+export_tgz=Standard TGZ archive
 export_txz=Standard TXZ archive
+export_defoptions=Default options already set
 export_safebackup=Safe mode ZFS export
 
 import_tittle=Restore a Jail

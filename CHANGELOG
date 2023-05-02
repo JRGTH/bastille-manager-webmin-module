@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.4.5..........Cosmetic fixes and improvements.
 0.4.4..........Update to rename module lib file causing errors on later Webmin releases.
 0.4.3..........Add option to create Linux jails from the UI.
 0.4.2..........Fix bug to display correct VNET interface, update export commands.
