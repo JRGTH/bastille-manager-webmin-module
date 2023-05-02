@@ -34,14 +34,12 @@ if ($config{'show_advanced'}) {
 			print &ui_table_row($text{'export_xz'},
 				&ui_yesno_radio("xz_archive", lc($xz_archive) eq 'no' ? 0 : lc($xz_archive) eq 'yes' ? 1 : 1));
 		}
-		if ($iszfsmode =~ "YES") {
-			print &ui_table_row($text{'export_tgz'},
-				&ui_yesno_radio("tgz_archive", lc($tgz_archive) eq 'no' ? 0 : lc($tgz_archive) eq 'yes' ? 1 : 1));
-		}
-		if ($iszfsmode =~ "YES") {
-			print &ui_table_row($text{'export_txz'},
-				&ui_yesno_radio("txz_archive", lc($txz_archive) eq 'no' ? 0 : lc($txz_archive) eq 'yes' ? 1 : 1));
+		print &ui_table_row($text{'export_tgz'},
+			&ui_yesno_radio("tgz_archive", lc($tgz_archive) eq 'no' ? 0 : lc($tgz_archive) eq 'yes' ? 1 : 1));
 
+		print &ui_table_row($text{'export_txz'},
+			&ui_yesno_radio("txz_archive", lc($txz_archive) eq 'no' ? 0 : lc($txz_archive) eq 'yes' ? 1 : 1));
+		if ($iszfsmode =~ "YES") {
 			print &ui_table_row($text{'export_safebackup'},
 				&ui_yesno_radio("safe_zfsexp", lc($safe_zfsexp) eq 'no' ? 0 : lc($safe_zfsexp) eq 'yes' ? 1 : 1));
 		}
