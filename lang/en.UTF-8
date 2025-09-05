@@ -67,6 +67,7 @@ create_relnote=Create a jail with the previous entered parameters.
 create_jailprefix=Current jail path default prefix
 create_thickjail=Create a Thickjail
 create_vnetjail=Enable VNET(VIMAGE)
+create_bridge_vnetjail=Enable VNET(Existing Bridge)
 create_emptyjail=Create an Empty jail
 create_linuxjail=Create an Linux jail
 

@@ -479,10 +479,14 @@ sub jail_create_cmd
 		} else {
 			if (($in{'thick'} == 1) && ($in{'vnet'} == 1)) {
 				$option = "-T -V";
+			} elsif (($in{'thick'} == 1) && ($in{'bridge_vnet'} == 1)) {
+				$option = "-T -B";
 			 } elsif ($in{'thick'} == 1 ) {
 				$option = "-T";
 			} elsif ($in{'vnet'} == 1 ) {
 				$option = "-V";
+			} elsif ($in{'bridge_vnet'} == 1 ) {
+				$option = "-B";
 			}
 		}
 

@@ -11,6 +11,7 @@ my $nic_def = "default";
 my $release_def = "default";
 my $thick_jail = &options_support();
 my $vnet_jail = &options_support();
+my $bridge_vnet_jail = &options_support();
 my $empty_jail = &options_support();
 my $linux_jail = &options_support();
 
@@ -38,6 +39,12 @@ if ($config{'show_advanced'}) {
 		$vnet = "no";
 		print &ui_table_row($text{'create_vnetjail'},
 			&ui_yesno_radio("vnet", lc($vnet) eq 'no' ? 0 : lc($vnet) eq 'yes' ? 1 : 1));
+	}
+
+	if ($bridge_vnet_jail) {
+		$bridge_vnet = "no";
+		print &ui_table_row($text{'create_bridge_vnetjail'},
+			&ui_yesno_radio("bridge_vnet", lc($bridge_vnet) eq 'no' ? 0 : lc($bridge_vnet) eq 'yes' ? 1 : 1));
 	}
 
 	if ($empty_jail) {
