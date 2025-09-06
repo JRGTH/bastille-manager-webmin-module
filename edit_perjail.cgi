@@ -23,7 +23,7 @@ if (open(my $fh, '<:encoding(UTF-8)', $editfile)) {
 }
 my $jail = $line;
 
-@files = ( "$config{'bastille_jailpath'}/$jail/fstab", "$config{'bastille_jailpath'}/$jail/jail.conf" );
+@files = ( "$config{'bastille_jailpath'}/$jail/fstab", "$config{'bastille_jailpath'}/$jail/jail.conf", "$config{'bastille_jailpath'}/$jail/settings.conf" );
 $in{'file'} ||= $files[0];
 &indexof($in{'file'}, @files) >= 0 || &error($text{'manual_efile'});
 print &ui_form_start("edit_perjail.cgi");
