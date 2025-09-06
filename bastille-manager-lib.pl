@@ -213,29 +213,21 @@ sub ui_jail_res
 
 		# Get some jail info from either jls or config.
 		$jid = &backquote_command("/usr/sbin/jls -j $key | /usr/bin/awk '/$key/ {print \$1}'");
-		$ipvx = &backquote_command("/usr/bin/grep '.*ip.*.addr.*=.*' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
-		$interface = &backquote_command("/usr/bin/grep -E '.*interface.*=.*;|.*vnet.interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
+		$ipvx = &backquote_command("$config{'bastille_path'} list $key | /usr/bin/awk '{print \$7}' | sed 1d");
+		$interface = &backquote_command("/usr/bin/grep -w '.*vnet.interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
 		$osrel = &backquote_command("/usr/sbin/jexec $key freebsd-version 2>/dev/null");
 
 		if (!$jid) {
 			$jid = "-";
 		}
-		# Try to get ipv6 instead.
-		#if (!$ipvx) {
-		#	$ipvx = &backquote_command("/usr/bin/grep '.*ip6.addr.*=' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
-		#}
-		# Try to get ip from vnet config.
-		if (!$ipvx) {
-			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key cat /etc/rc.conf | /usr/bin/grep 'ifconfig_vnet0=' | cut -d'\"' -f2 | sed 's/inet //'");
-		}
-		# Try to get ip from ifconfig as last resort.
-		# Netmask need conversion from hex to dec.
-		if (!$ipvx) {
-			#$netmask_hex = &backquote_command("$config{'bastille_path'} cmd $key ifconfig vnet0 | /usr/bin/grep 'inet' | /usr/bin/awk '{print \$4}'");
-			$ipvx = &backquote_command("$config{'bastille_path'} cmd $key ifconfig vnet0 | /usr/bin/grep 'inet' | /usr/bin/awk '{print \$2}'");
-		}
 		if (!$ipvx) {
 			$ipvx = "-";
+		}
+		if (!$interface) {
+			$interface = &backquote_command("/usr/bin/grep -w '.*interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
+		}
+		if (!$interface) {
+			$interface = &backquote_command("/usr/bin/grep -w '.*ip4.addr.*=.*|.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d'|' -f1 | awk '{print \$3}'");
 		}
 		if (!$interface) {
 			$interface = "-";

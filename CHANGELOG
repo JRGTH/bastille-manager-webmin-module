@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.4.8..........Cosmetic fixes, get IP from bastille list command.
 0.4.7..........Add support for Bridge VNET(Existing Bridge).
 0.4.6..........Show TGZ/TXZ export options only on UFS.
 0.4.5..........Cosmetic fixes and improvements.
