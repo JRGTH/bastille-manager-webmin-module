@@ -233,7 +233,16 @@ sub ui_jail_res
 			$interface = "-";
 		}
 		if (!$osrel) {
-			$osrel = "-";
+			# Read version from os-release file.
+			$osrel = &backquote_command("/bin/cat $config{'bastille_jailpath'}/$key/root/etc/os-release | grep 'PRETTY_NAME=' | tr -d 'PRETTY_NAME=\"'");
+			if (!$osrel) {
+				# Fallback to generic uname.
+				$osrel = &backquote_command("/usr/sbin/jexec $key uname -o 2>/dev/null");
+			}
+			# We can't get release version info or jail stopped.
+			if (!$osrel) {
+				$osrel = "-";
+			}
 		}
 
 		# Display custom template icons if available.
