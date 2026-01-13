@@ -6,25 +6,25 @@ use WebminCore;
 use File::Path qw/mkpath/;
 &init_config();
 
-# Default bastille jail list props.
-# JID, IP Address, Hostname, Path
+# Latest bastille jail list props.
+# JID  Name  Boot  Prio  State  Type  IP_Address  Published_Ports  Release  Tags
 my $props_status="IP,HOSTNAME,PATH";
 
 # Resource props.
 if ($config{'show_cmd'}) {
 	if ($config{'show_templates'}) {
-		$props_res="IP,RELEASE,NIC,PATH,ACTIVE,TEMPLATE,CMD";
+		$props_res="Boot,Prio,State,Type,IP Address,Published Ports,Release,Tags,OS,CMD";
 	}
 else {
-	$props_res="IP,RELEASE,NIC,PATH,ACTIVE,CMD";
+	$props_res="Boot,Prio,State,Type,IP Address,Published Ports,Release,Tags,CMD";
 	}
 }
 else {
 	if ($config{'show_templates'}) {
-		$props_res="IP,RELEASE,NIC,PATH,ACTIVE,TEMPLATE";
+		$props_res="Boot,Prio,State,Type,IP Address,Published Ports,Release,Tags,OS";
 	}
 else {
-	$props_res="IP,RELEASE,NIC,PATH,ACTIVE";
+	$props_res="Boot,Prio,State,Type,IP Address,Published Ports,Release,Tags";
 	}
 }
 
@@ -63,6 +63,37 @@ sub list_local_backups
 	return ( @backups );
 }
 
+sub list_export_options
+{
+	my $iszfsmode = &get_zfs_mode();
+	if ($iszfsmode =~ "YES") {
+		$get_exp_opts = "--gz --xz --zst --raw --tgz --txz --tzst";
+	} else {
+		$get_exp_opts = "--tgz --txz --tzst";
+	}
+	my @exportopts = split(/\s+/, $get_exp_opts);
+	return ( @exportopts );
+}
+
+sub list_jail_types
+{
+	if ($config{'show_linux'}) {
+		$get_jail_type = "Thick Empty Linux";
+	} else {
+		$get_jail_type = "Thick Empty";
+	}
+	my @jailtype = split(/\s+/, $get_jail_type);
+	return ( @jailtype );
+}
+
+sub list_vnet_types
+{
+
+	$get_vnet_type = "VNET BRIDGE";
+	my @vnettype = split(/\s+/, $get_vnet_type);
+	return ( @vnettype );
+}
+
 sub list_base_release
 {
 	my @baserels = split(' ', $config{'bastille_releases'});
@@ -90,13 +121,6 @@ sub get_zfs_mode
 my $start_icon = "./images/start.png";
 my $stop_icon = "./images/stop.png";
 my $restart_icon = "./images/restart.png";
-
-# Check if bastille support for options
-sub options_support
-{
-	#my $options_support = &backquote_command("$config{'bastille_path'} create | /usr/bin/grep -wo 'option'");
-	my $options_support = "yes";
-}
 
 sub get_local_osrelease
 {
@@ -139,13 +163,11 @@ $jailcheck = &backquote_command("/usr/sbin/jls name | /usr/bin/awk '/^$jail\$/'"
 if ($jailcheck) {
 	# Enable stop and restart buttons and display check icon.
 	$iconstat = "./images/check.png";
-	#$showcmd = "<a href='stop.cgi?jails=$key'>Stop</a> | <a href='restart.cgi?jails=$key'>Restart</a>"
 	$showcmd = "<a href='stop.cgi?jails=$key'><img src=$stop_icon></a> | <a href='restart.cgi?jails=$key'><img src=$restart_icon></a>"
 	}
 else {
 	# Enable start and restart buttons and display stop icon.
 	$iconstat = "./images/not.png";
-	#$showcmd = "<a href='start.cgi?jails=$key'>Start</a> | <a href='restart.cgi?jails=$key'>Restart</a>";
 	$showcmd = "<a href='start.cgi?jails=$key'><img src=$start_icon></a> | <a href='restart.cgi?jails=$key'><img src=$restart_icon></a>";
 	}
 }
@@ -206,43 +228,28 @@ sub ui_jail_res
 {
 	my %jailr = list_res($jailr);
 	@props = split(/,/, $props_res);
-	print &ui_columns_start([ "JID", "NAME", @props ]);
+	print &ui_columns_start([ "JID", "Name", @props ]);
 	foreach $key (sort(keys %jailr)) {
 		@vals = ();
 		foreach $prop (@props) { push (@vals, $jailr{$key}{$prop}); }
+		if ($key) {
+			# Get some jail infos from 'bastille list' then dump data to temporary file.
+			# JID  Name  Boot  Prio  State  Type  IP_Address  Published_Ports  Release  Tags
+			&backquote_command("$config{'bastille_path'} list | grep -w $key | while read _jid _name _boot _prio _state _type _ip _ports _release _tag; do
+				echo \$_jid \$_name \$_boot \$_prio \$_state \$_type \$_ip \$_ports \$_release \$_tag > /tmp/jail.$key.state; done");
+			# Set some variables from the previous temporary file.
+			$jid = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$1}'");
+			$boot = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$3}'");
+			$prio = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$4}'");
+			$state = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$5}'");
+			$type = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$6}'");
+			$ipvx = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$7}'");
+			$ports = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$8}'");
+			$release = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$9}'");
+			$tags = &backquote_command("cat /tmp/jail.$key.state | awk '{print \$10}'");
 
-		# Get some jail info from either jls or config.
-		$jid = &backquote_command("/usr/sbin/jls -j $key | /usr/bin/awk '/$key/ {print \$1}'");
-		$ipvx = &backquote_command("$config{'bastille_path'} list $key | /usr/bin/awk '{print \$7}' | sed 1d");
-		$interface = &backquote_command("/usr/bin/grep -w '.*vnet.interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
-		$osrel = &backquote_command("/usr/sbin/jexec $key freebsd-version 2>/dev/null");
-
-		if (!$jid) {
-			$jid = "-";
-		}
-		if (!$ipvx) {
-			$ipvx = "-";
-		}
-		if (!$interface) {
-			$interface = &backquote_command("/usr/bin/grep -w '.*interface.*=.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d '=' -f2 | tr -d ' ;'");
-		}
-		if (!$interface) {
-			$interface = &backquote_command("/usr/bin/grep -w '.*ip4.addr.*=.*|.*;' $config{'bastille_jailpath'}/$key/jail.conf | cut -d'|' -f1 | awk '{print \$3}'");
-		}
-		if (!$interface) {
-			$interface = "-";
-		}
-		if (!$osrel) {
-			# Read version from os-release file.
-			$osrel = &backquote_command("/bin/cat $config{'bastille_jailpath'}/$key/root/etc/os-release | grep 'PRETTY_NAME=' | tr -d 'PRETTY_NAME=\"'");
-			if (!$osrel) {
-				# Fallback to generic uname.
-				$osrel = &backquote_command("/usr/sbin/jexec $key uname -o 2>/dev/null");
-			}
-			# We can't get release version info or jail stopped.
-			if (!$osrel) {
-				$osrel = "-";
-			}
+			# Cleanup temporary file.
+			unlink "/tmp/jail.$key.state";
 		}
 
 		# Display custom template icons if available.
@@ -262,26 +269,23 @@ sub ui_jail_res
 				}
 		}
 
+		# Display jail state.
 		if ($config{'show_cmd'}) {
 			&check_jail_status($key);
 			if ($config{'show_templates'}) {
-				print &ui_columns_row(["$jid", $key, "$ipvx", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-					"<img src=$iconstat>", "<img src=$template_icon>", "$showcmd"]);
+				print &ui_columns_row(["$jid", $key, "$boot", "$prio", "$state", $type, $ipvx, $ports, $release, $tags, "<img src=$template_icon>", "$showcmd"]);
 			}
 			else {
-				print &ui_columns_row(["$jid", $key, "$ipvx", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-					"<img src=$iconstat>", "$showcmd"]);
-			}	
+				print &ui_columns_row(["$jid", $key, "$boot", "$prio", "$state", $type, $ipvx, $ports, $release, $tags, "$showcmd"]);
+			}
 		}
 		else {
 			&check_jail_status($key);
 			if ($config{'show_templates'}) {
-				print &ui_columns_row(["$jid", $key, "$ipvx", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-					"<img src=$iconstat>", "<img src=$template_icon>"]);
+				print &ui_columns_row(["$jid", $key, "$boot", "$prio", "$state", $type, $ipvx, $ports, $release, $tags, "<img src=$template_icon>"]);
 			}
 			else {
-				print &ui_columns_row(["$jid", $key, "$ipvx", "$osrel", "$interface", "<a href='../filemin/index.cgi?path=$config{'bastille_jailpath'}/$key'>$config{'bastille_jailpath'}/$key</a>",
-					"<img src=$iconstat>"]);
+				print &ui_columns_row(["$jid", $key, "$boot", "$prio", "$state", $type, $ipvx, $ports, $release, $tags]);
 				}
 		}
 	}
@@ -466,29 +470,25 @@ sub restart_jail
 sub jail_create_cmd
 {
 	if ($config{'show_advanced'}) {
-		$option = "";
 
-		if ($in{'emptyjail'} == 1) {
-			# Just create an empty container with minimal jail.conf.
+		# Set requested jail type option.
+		if ($in{'jail_type'} eq "Thick") {
+			$option = "-T";
+		} elsif ($in{'jail_type'} eq "Empty") {
 			$option = "-E";
-		} elsif ($in{'linuxjail'} == 1) {
-			# Just create an linux container(experimental).
+		} elsif ($in{'jail_type'} eq "Linux") {
 			$option = "-L";
-		} elsif (($in{'emptyjail'} == 1) && ($in{'linuxjail'} == 1)) {
-			# Just create an empty container, overrides all other options.
-			$option = "-E";
-		} else {
-			if (($in{'thick'} == 1) && ($in{'vnet'} == 1)) {
-				$option = "-T -V";
-			} elsif (($in{'thick'} == 1) && ($in{'bridge_vnet'} == 1)) {
-				$option = "-T -B";
-			 } elsif ($in{'thick'} == 1 ) {
-				$option = "-T";
-			} elsif ($in{'vnet'} == 1 ) {
-				$option = "-V";
-			} elsif ($in{'bridge_vnet'} == 1 ) {
-				$option = "-B";
-			}
+		}
+
+		# Set requested vnet type option.
+		if ($in{'vnet_type'} eq "VNET") {
+			$isvnet = "-V";
+		} elsif ($in{'vnet_type'} eq "BRIDGE") {
+			$isvnet = "-B";
+		}
+
+		if ($isvnet) {
+			$option = "$option $isvnet";
 		}
 
 		my $cmd = "$cmdline";
@@ -506,12 +506,16 @@ sub destroy_jail_cmd
 		&read_last_edit();
 		if ($item ne $in{'name'}) {
 			$item = "";
+			$opts = "";
+		} else {
+			# Confirmed to be destroyed.
+			$opts = "--auto -y";
 		}
 		$template_icon = "./images/addons/$item\_icon.png";
 		if (-e $template_icon) {
-			$destroy_cmd = &backquote_command("$config{'bastille_path'} destroy $item && /bin/rm $template_icon 2>&1 </dev/null");
+			$destroy_cmd = &backquote_command("$config{'bastille_path'} destroy $opts $item && /bin/rm $template_icon 2>&1 </dev/null");
 		} else {
-			$destroy_cmd = &backquote_command("$config{'bastille_path'} destroy $item 2>&1 </dev/null");
+			$destroy_cmd = &backquote_command("$config{'bastille_path'} destroy $opts $item 2>&1 </dev/null");
 		}
 		local $out = $destroy_cmd;
 		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
@@ -582,53 +586,32 @@ sub download_release_cmd
 sub export_jail_cmd
 {
 	if ($config{'show_advanced'}) {
-		$export_opt="";
+		$export_opts="";
 		$export_path="";
+		$export_format="$in{'export_format'}";
 		$export_defaults = &get_export_options();
 
+		# Build the requested export options.
 		if ($export_defaults =~ /^ *$/) {
-			if (($in{'raw_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
-				$export_opt = "--safe --raw";
-			}
-			elsif ($in{'raw_archive'} == 1) {
-				$export_opt = "--raw";
-			}
-			elsif (($in{'gz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
-				$export_opt = "--safe --gz";
-			}
-			elsif ($in{'gz_archive'} == 1) {
-				$export_opt = "--gz";
-			}
-			elsif (($in{'xz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
-				$export_opt = "--safe --xz";
-			}
-			elsif ($in{'xz_archive'} == 1) {
-				$export_opt = "--xz";
-			}
-			elsif (($in{'tgz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
-				$export_opt = "--tgz";
-			}
-			elsif ($in{'tgz_archive'} == 1) {
-				$export_opt = "--tgz";
-			}
-			elsif (($in{'txz_archive'} == 1) && ($in{'safe_zfsexp'} == 1)) {
-				$export_opt = "--txz";
-			}
-			elsif ($in{'txz_archive'} == 1) {
-				$export_opt = "--txz";
-			}
-			elsif ($in{'safe_zfsexp'} == 1) {
-				$export_opt = "--safe --xz";
+			if ($in{'safe_zfsexp'} == 1) {
+				$export_opts = "--auto $export_format";
+
+			} elsif ($in{'hot_zfsexp'} == 1) {
+				$export_opts = "--live $export_format";
+			} else {
+				$export_opts = "$export_format";
 			}
 		}
 
+		# Set export path if defined.
 		if ($in{'exp_path'}) {
 			$export_path = $in{'exp_path'};
 		}
-			my $item = $in{'exp_jail'};
-			local $out = &backquote_command("$config{'bastille_path'} export $export_opt $item $export_path 2>&1 </dev/null");
-			$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
-			return "<pre>$out</pre>" if ($?);
+
+		my $item = $in{'exp_jail'};
+		local $out = &backquote_command("$config{'bastille_path'} export $export_opts $item $export_path 2>&1 </dev/null");
+		$out =~ s/\e\[[][A-Za-z0-9];?[0-9]*m?//g;
+		return "<pre>$out</pre>" if ($?);
 	}
 	return undef;
 }
