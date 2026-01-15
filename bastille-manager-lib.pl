@@ -576,7 +576,7 @@ sub download_release_cmd
 		return "<pre>$out</pre>" if ($?);
 
 		# Set back default distfiles.
-		if ($opt_distfiles) {
+		if ($set_distfiles) {
 			&backquote_command("/usr/sbin/sysrc -f $config{'bastille_confpath'} bastille_bootstrap_archives=\"$def_distfiles\"");
 		}
 	}

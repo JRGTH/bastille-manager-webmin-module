@@ -3,6 +3,8 @@
 ==================================
 Version        Description
 
+0.6.1..........Minor fix to restore default bootstrap archives.
+0.6.0..........Overall code update to support latest bastille framework.
 0.5.0..........Cosmetic fixes, fallback to read version from os-release.
 0.4.9..........Add settings.conf file to config editor.
 0.4.8..........Cosmetic fixes, get IP from bastille list command.
