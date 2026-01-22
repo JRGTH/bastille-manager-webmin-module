@@ -15,6 +15,7 @@ index_fstabselect=Click on the jail name to use the built-in FSTAB manager, or c
 index_deletejail=Click on the desired item name to be deleted, confirmation is required on the next step.
 index_jailsource=Click on the jail path to open the directory with File Manager.
 index_defrelease=System
+index_createnote=Note: Quotes may be used to specify more than one IP Address type like 'DHCP SLAAC'.
 
 start_err=Failed to start bastille jail
 stop_err=Failed to stop bastille jail

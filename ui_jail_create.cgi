@@ -38,4 +38,6 @@ print &ui_buttons_row("create.cgi", $text{'create_button'}, $text{'create_relnot
 print &ui_buttons_end();
 print &ui_form_end();
 
+print "<br>$text{'index_createnote'}";
+
 &ui_print_footer("", $text{'index_return'});

@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.6.4..........Cosmetic and wording changes in create page.
 0.6.3..........Minor cosmetic/wording changes in create page.
 0.6.2..........Cosmetic fixes, remove duplicate in config options.
 0.5.0..........Cosmetic fixes, fallback to read version from os-release.
