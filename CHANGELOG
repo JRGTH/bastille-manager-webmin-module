@@ -3,6 +3,7 @@
 ==================================
 Version        Description
 
+0.6.5..........Fix edit/saving jail settings.conf file.
 0.6.4..........Cosmetic and wording changes in create page.
 0.6.3..........Minor cosmetic/wording changes in create page.
 0.6.2..........Cosmetic fixes, remove duplicate in config options.

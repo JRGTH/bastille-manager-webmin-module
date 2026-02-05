@@ -17,7 +17,7 @@ if (open(my $fh, '<:encoding(UTF-8)', $editfile)) {
 }
 my $jail = $line;
 
-@files = ( "$config{'bastille_jailpath'}/$jail/fstab", "$config{'bastille_jailpath'}/$jail/jail.conf" );
+@files = ( "$config{'bastille_jailpath'}/$jail/fstab", "$config{'bastille_jailpath'}/$jail/jail.conf", "$config{'bastille_jailpath'}/$jail/settings.conf" );
 &indexof($in{'file'}, @files) >= 0 || &error($text{'manual_efile'});
 $in{'data'} =~ s/\r//g;
 $in{'data'} =~ /\S/ || &error($text{'manual_edata'});
